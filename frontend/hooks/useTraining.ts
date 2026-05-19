@@ -35,7 +35,6 @@ export interface HookResult<T> {
 function useEndpoint<T>(
   key: string,
   fetcher: (signal: AbortSignal) => Promise<T | null>,
-  deps: ReadonlyArray<unknown>,
 ): HookResult<T> {
   const { refreshMs, refreshTick, refetch } = useDashboardFilters()
   const [data, setData] = useState<T | null>(null)
@@ -73,7 +72,7 @@ function useEndpoint<T>(
       })
     return () => controller.abort()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [key, refreshTick, tick, ...deps])
+  }, [key, refreshTick, tick])
 
   useEffect(() => {
     if (!refreshMs) return
@@ -97,7 +96,6 @@ export function useTrainingKpis(): HookResult<TrainingKpis> {
   return useEndpoint(
     `training.kpis|${range.date_from ?? ''}|${range.date_to ?? ''}|${country ?? ''}`,
     withMock(mockTrainingKpis, () => api.training.kpis({ ...range, location: country })),
-    [range.date_from, range.date_to, country],
   )
 }
 
@@ -106,7 +104,6 @@ export function useTrainingByCountry(): HookResult<TrainingCountryItem[]> {
   return useEndpoint(
     `training.byCountry|${range.date_from ?? ''}|${range.date_to ?? ''}`,
     withMock(mockTrainingByCountry, () => api.training.byCountry(range)),
-    [range.date_from, range.date_to],
   )
 }
 
@@ -115,7 +112,6 @@ export function useTrainingTimeline(): HookResult<TrainingTimelineItem[]> {
   return useEndpoint(
     `training.timeline|${range.date_from ?? ''}|${range.date_to ?? ''}|${country ?? ''}`,
     withMock(mockTrainingTimeline, () => api.training.timeline({ ...range, location: country })),
-    [range.date_from, range.date_to, country],
   )
 }
 
@@ -124,7 +120,6 @@ export function useTrainingFriction(): HookResult<TrainingFriction> {
   return useEndpoint(
     `training.friction|${range.date_from ?? ''}|${range.date_to ?? ''}|${country ?? ''}`,
     withMock(mockTrainingFriction, () => api.training.friction({ ...range, location: country })),
-    [range.date_from, range.date_to, country],
   )
 }
 
@@ -135,7 +130,6 @@ export function useTrainingDistribution(): HookResult<TrainingDistributionItem[]
     withMock(mockTrainingDistribution, () =>
       api.training.distribution({ ...range, location: country }),
     ),
-    [range.date_from, range.date_to, country],
   )
 }
 
@@ -148,7 +142,6 @@ export function useTrainingOutliers(limit = 4): HookResult<TrainingOutlierItem[]
       const res = await api.training.outliers(limit, { ...range, location: country })
       return res.data
     },
-    [limit, range.date_from, range.date_to, country],
   )
 }
 
@@ -156,7 +149,6 @@ export function useTrainingBanner(): HookResult<TrainingBanner> {
   return useEndpoint(
     'training.banner',
     withMock(mockTrainingBanner, () => api.training.banner()),
-    [],
   )
 }
 

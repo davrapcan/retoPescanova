@@ -80,30 +80,99 @@ def get_by_office(
     return result
 
 
-def get_top_patches(limit: int = 5) -> list[MDMPatchItem]:
-    df = store.mdm_patches.copy()
-    total_devices = len(store.mdm_devices)
-    df = df.sort_values("risk_score", ascending=False).head(limit)
-    return [
-        MDMPatchItem(
-            patch_id=int(row["patch_id"]),
-            bulletin_id=str(row["bulletin_id"]),
-            description=str(row["description"]),
-            missing_systems=int(row["missing_systems"]),
-            installed_systems=int(row["installed_systems"]),
-            failed_systems=int(row["failed_systems"]),
-            risk_score=int(row["risk_score"]),
-            total_devices=total_devices,
+_MISSING_STATUSES = {"Missing", "Patches Missing"}
+_FAILED_STATUSES = {"Failed", "Patching Failed"}
+_INSTALLED_STATUSES = {"Installed", "Patching Completed"}
+
+
+def get_top_patches(limit: int = 5, office: Optional[str] = None) -> list[MDMPatchItem]:
+    patches = store.mdm_patches
+    devices = store.mdm_devices
+
+    if not office:
+        df = patches.copy()
+        total_devices = len(devices)
+        df = df.sort_values("risk_score", ascending=False).head(limit)
+        return [
+            MDMPatchItem(
+                patch_id=int(row["patch_id"]),
+                bulletin_id=str(row["bulletin_id"]),
+                description=str(row["description"]),
+                missing_systems=int(row["missing_systems"]),
+                installed_systems=int(row["installed_systems"]),
+                failed_systems=int(row["failed_systems"]),
+                risk_score=int(row["risk_score"]),
+                total_devices=total_devices,
+            )
+            for _, row in df.iterrows()
+        ]
+
+    # Office-scoped top patches: recompute per-patch counts from events
+    # restricted to devices in the selected office.
+    offices = [o.strip() for o in office.split(",")]
+    office_devices = devices[devices["remote_office_raw"].isin(offices)]
+    total_devices = len(office_devices)
+    if total_devices == 0:
+        return []
+
+    computer_names = set(office_devices["computer_name"])
+    events = store.mdm_events
+    office_events = events[events["computer_name"].isin(computer_names)].copy()
+    if office_events.empty:
+        return []
+
+    def classify(status: str) -> str:
+        if status in _MISSING_STATUSES:
+            return "missing"
+        if status in _FAILED_STATUSES:
+            return "failed"
+        if status in _INSTALLED_STATUSES:
+            return "installed"
+        return "other"
+
+    office_events["bucket"] = office_events["deployment_status"].map(classify)
+    counts = (
+        office_events.groupby(["patch_id", "bucket"]).size().unstack(fill_value=0)
+    )
+    for col in ("missing", "failed", "installed"):
+        if col not in counts.columns:
+            counts[col] = 0
+    counts["risk_score"] = counts["missing"] + counts["failed"] * 2
+    counts = counts.sort_values("risk_score", ascending=False).head(limit)
+
+    patch_meta = patches.set_index("patch_id")
+    items: list[MDMPatchItem] = []
+    for patch_id, row in counts.iterrows():
+        meta = patch_meta.loc[patch_id] if patch_id in patch_meta.index else None
+        items.append(
+            MDMPatchItem(
+                patch_id=int(patch_id),
+                bulletin_id=str(meta["bulletin_id"]) if meta is not None else "",
+                description=str(meta["description"])
+                if meta is not None
+                else str(office_events[office_events["patch_id"] == patch_id]["patch_description"].iloc[0]),
+                missing_systems=int(row["missing"]),
+                installed_systems=int(row["installed"]),
+                failed_systems=int(row["failed"]),
+                risk_score=int(row["risk_score"]),
+                total_devices=total_devices,
+            )
         )
-        for _, row in df.iterrows()
-    ]
+    return items
 
 
 def get_timeline(
     date_from: Optional[str] = None,
     date_to: Optional[str] = None,
+    office: Optional[str] = None,
 ) -> list[MDMTimelineItem]:
     df = _filter_events(date_from, date_to).copy()
+    if office:
+        offices = [o.strip() for o in office.split(",")]
+        office_devices = store.mdm_devices[
+            store.mdm_devices["remote_office_raw"].isin(offices)
+        ]
+        df = df[df["computer_name"].isin(office_devices["computer_name"])]
     df["date_only"] = df["deployed_at"].dt.date
     grouped = df.groupby(["date_only", "deployment_status"]).size().unstack(fill_value=0)
 

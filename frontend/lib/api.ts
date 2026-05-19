@@ -43,10 +43,10 @@ export const api = {
     byOffice: (params?: { date_from?: string; date_to?: string; office?: string }) =>
       fetchApi<MDMOfficeItem[]>(`/mdm/by-office${toQuery(params)}`),
 
-    topPatches: (limit = 5) =>
-      fetchApi<MDMPatchItem[]>(`/mdm/top-patches?limit=${limit}`),
+    topPatches: (limit = 5, params?: { office?: string }) =>
+      fetchApi<MDMPatchItem[]>(`/mdm/top-patches?limit=${limit}${toQuery(params, false)}`),
 
-    timeline: (params?: { date_from?: string; date_to?: string }) =>
+    timeline: (params?: { date_from?: string; date_to?: string; office?: string }) =>
       fetchApi<MDMTimelineItem[]>(`/mdm/timeline${toQuery(params)}`),
 
     banner: () =>

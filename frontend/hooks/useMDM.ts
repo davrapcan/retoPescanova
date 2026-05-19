@@ -24,7 +24,6 @@ export interface HookResult<T> {
 function useEndpoint<T>(
   key: string,
   fetcher: (signal: AbortSignal) => Promise<T | null>,
-  deps: ReadonlyArray<unknown>,
 ): HookResult<T> {
   const { refreshMs, refreshTick, refetch } = useDashboardFilters()
   const [data, setData] = useState<T | null>(null)
@@ -62,7 +61,7 @@ function useEndpoint<T>(
       })
     return () => controller.abort()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [key, refreshTick, tick, ...deps])
+  }, [key, refreshTick, tick])
 
   useEffect(() => {
     if (!refreshMs) return
@@ -86,33 +85,32 @@ export function useMDMKpis(): HookResult<MDMKpis> {
   return useEndpoint(
     `mdm.kpis|${range.date_from ?? ''}|${range.date_to ?? ''}`,
     withMock(mockMDMKpis, () => api.mdm.kpis(range)),
-    [range.date_from, range.date_to],
   )
 }
 
 export function useMDMByOffice(): HookResult<MDMOfficeItem[]> {
-  const { range, office } = useDashboardFilters()
+  // Source panel: never filters itself by the selected office,
+  // so the click just highlights the bar + sets the global filter chip.
+  const { range } = useDashboardFilters()
   return useEndpoint(
-    `mdm.byOffice|${range.date_from ?? ''}|${range.date_to ?? ''}|${office ?? ''}`,
-    withMock(mockMDMByOffice, () => api.mdm.byOffice({ ...range, office })),
-    [range.date_from, range.date_to, office],
+    `mdm.byOffice|${range.date_from ?? ''}|${range.date_to ?? ''}`,
+    withMock(mockMDMByOffice, () => api.mdm.byOffice(range)),
   )
 }
 
 export function useMDMTopPatches(limit = 5): HookResult<MDMPatchItem[]> {
+  const { office } = useDashboardFilters()
   return useEndpoint(
-    `mdm.topPatches|${limit}`,
-    withMock(mockMDMTopPatches, () => api.mdm.topPatches(limit)),
-    [limit],
+    `mdm.topPatches|${limit}|${office ?? ''}`,
+    withMock(mockMDMTopPatches, () => api.mdm.topPatches(limit, { office })),
   )
 }
 
 export function useMDMTimeline(): HookResult<MDMTimelineItem[]> {
-  const { range } = useDashboardFilters()
+  const { range, office } = useDashboardFilters()
   return useEndpoint(
-    `mdm.timeline|${range.date_from ?? ''}|${range.date_to ?? ''}`,
-    withMock(mockMDMTimeline, () => api.mdm.timeline(range)),
-    [range.date_from, range.date_to],
+    `mdm.timeline|${range.date_from ?? ''}|${range.date_to ?? ''}|${office ?? ''}`,
+    withMock(mockMDMTimeline, () => api.mdm.timeline({ ...range, office })),
   )
 }
 
@@ -120,6 +118,5 @@ export function useMDMBanner(): HookResult<MDMBanner> {
   return useEndpoint(
     'mdm.banner',
     withMock(mockMDMBanner, () => api.mdm.banner()),
-    [],
   )
 }

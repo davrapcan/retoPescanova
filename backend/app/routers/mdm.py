@@ -37,18 +37,20 @@ async def get_mdm_by_office(
 @router.get("/top-patches", response_model=ApiResponse[List[MDMPatchItem]])
 async def get_mdm_top_patches(
     limit: int = Query(default=5, ge=1, le=50),
+    office: Optional[str] = None,
 ):
     _require_mdm()
-    return {"data": mdm_service.get_top_patches(limit)}
+    return {"data": mdm_service.get_top_patches(limit, office)}
 
 
 @router.get("/timeline", response_model=ApiResponse[List[MDMTimelineItem]])
 async def get_mdm_timeline(
     date_from: Optional[str] = None,
     date_to: Optional[str] = None,
+    office: Optional[str] = None,
 ):
     _require_mdm()
-    return {"data": mdm_service.get_timeline(date_from, date_to)}
+    return {"data": mdm_service.get_timeline(date_from, date_to, office)}
 
 
 @router.get("/banner", response_model=ApiResponse[MDMBanner])

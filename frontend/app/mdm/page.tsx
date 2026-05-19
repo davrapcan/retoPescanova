@@ -55,13 +55,34 @@ export default function MDMPage() {
     return byOffice.data.filter((o) => o[status] > 0)
   }, [byOffice.data, status])
 
+  // KPIs derived from the selected office when an office filter is active.
+  // The backend /kpis endpoint doesn't accept `office`, so we aggregate locally.
+  const officeKpis = useMemo(() => {
+    if (!office || !byOffice.data) return null
+    const row = byOffice.data.find((o) => o.office === office)
+    if (!row) return null
+    const total = row.total || 1
+    return {
+      completed: row.completed,
+      missing: row.missing,
+      in_progress: row.in_progress,
+      failed: row.failed,
+      total: row.total,
+      completed_pct: (row.completed / total) * 100,
+      missing_pct: (row.missing / total) * 100,
+      in_progress_pct: (row.in_progress / total) * 100,
+      failed_pct: (row.failed / total) * 100,
+    }
+  }, [office, byOffice.data])
+
+  const displayedKpis = officeKpis ?? kpis.data
+  const kpiScopeLabel = office ? `de ${office}` : 'del parque'
+
   return (
     <div
       className="grid gap-1.5"
       style={{
-        height: 'calc(100vh - 90px)',
-        gridTemplateRows: 'auto auto minmax(0, 1fr) minmax(160px, 0.35fr)',
-        overflow: 'hidden',
+        gridTemplateRows: 'auto auto 360px 260px',
       }}
     >
       {/* ── Risk Banner ──────────────────────────────────────────── */}
@@ -83,35 +104,35 @@ export default function MDMPage() {
           <div className="grid grid-cols-4 gap-1.5">
             {[0, 1, 2, 3].map((i) => <Skeleton key={i} className="h-[76px]" />)}
           </div>
-        ) : kpis.data ? (
+        ) : displayedKpis ? (
           <div className="grid grid-cols-4 gap-1.5">
             <KPICard
               label="Patching Completed"
-              value={kpis.data.completed}
-              subtitle={`${kpis.data.completed_pct.toFixed(1)}% del parque`}
+              value={displayedKpis.completed}
+              subtitle={`${displayedKpis.completed_pct.toFixed(1)}% ${kpiScopeLabel}`}
               severity="ok"
               active={status === 'completed'}
               onClick={() => toggleStatus('completed' as StatusKey)}
             />
             <KPICard
               label="Patches Missing"
-              value={kpis.data.missing}
-              subtitle={`${kpis.data.missing_pct.toFixed(1)}% del parque`}
+              value={displayedKpis.missing}
+              subtitle={`${displayedKpis.missing_pct.toFixed(1)}% ${kpiScopeLabel}`}
               severity="warning"
               active={status === 'missing'}
               onClick={() => toggleStatus('missing' as StatusKey)}
             />
             <KPICard
               label="Patching In Progress"
-              value={kpis.data.in_progress}
-              subtitle={`${kpis.data.in_progress_pct.toFixed(1)}% del parque`}
+              value={displayedKpis.in_progress}
+              subtitle={`${displayedKpis.in_progress_pct.toFixed(1)}% ${kpiScopeLabel}`}
               active={status === 'in_progress'}
               onClick={() => toggleStatus('in_progress' as StatusKey)}
             />
             <KPICard
               label="Patching Failed"
-              value={kpis.data.failed}
-              subtitle={`${kpis.data.failed_pct.toFixed(1)}% del parque`}
+              value={displayedKpis.failed}
+              subtitle={`${displayedKpis.failed_pct.toFixed(1)}% ${kpiScopeLabel}`}
               severity="critical"
               active={status === 'failed'}
               onClick={() => toggleStatus('failed' as StatusKey)}
@@ -166,7 +187,7 @@ export default function MDMPage() {
       </div>
 
       {/* ── CORE 3 — Evolución temporal ──────────────────────────── */}
-      <div className="min-h-0">
+      <div>
         <Card
           title="¿cómo evoluciona el despliegue diario?"
           className="h-full"
