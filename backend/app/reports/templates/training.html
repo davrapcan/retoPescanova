@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block kpis %}
+<div class="kpi-row">
+  <div class="kpi-card brand">
+    <div class="kpi-label">Usuarios</div>
+    <div class="kpi-value">{{ kpis.total_users }}</div>
+    <div class="kpi-meta">{{ kpis.total_countries }} países · {{ kpis.total_modules }} módulos</div>
+  </div>
+  <div class="kpi-card ok">
+    <div class="kpi-label">% Finalización</div>
+    <div class="kpi-value">{{ (kpis.completion_rate * 100) | round(1) }}%</div>
+    <div class="kpi-meta">Objetivo &gt; 70%</div>
+  </div>
+  <div class="kpi-card warning">
+    <div class="kpi-label">Score medio</div>
+    <div class="kpi-value">{{ kpis.avg_score_pct }}%</div>
+    <div class="kpi-meta">Objetivo &gt; 25%</div>
+  </div>
+  <div class="kpi-card brand">
+    <div class="kpi-label">Tiempo medio</div>
+    <div class="kpi-value">{{ kpis.avg_duration_min }} min</div>
+    <div class="kpi-meta">Por usuario</div>
+  </div>
+</div>
+{% endblock %}
+
+{% block banner %}
+<div class="risk-banner {{ banner.severity }}">
+  <div class="title">{{ banner.title }}</div>
+  <div class="desc">{{ banner.description }}</div>
+</div>
+{% endblock %}
+
+{% block content %}
+<h2 class="section-title">Estado por país</h2>
+{% if countries %}
+<table class="report-table">
+  <thead>
+    <tr>
+      <th>País</th>
+      <th class="num">Usuarios</th>
+      <th class="num">% Finalización</th>
+      <th class="num">Score medio</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for c in countries %}
+    <tr>
+      <td>{{ c.location }}</td>
+      <td class="num">{{ c.user_count }}</td>
+      <td class="num">{{ (c.completion_rate * 100) | round(1) }}%</td>
+      <td class="num">{{ c.avg_score_pct }}%</td>
+      <td>{% if c.below_threshold %}<span class="warn-pill">⚠ Bajo umbral</span>{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="empty-state">Sin países para los filtros aplicados</div>
+{% endif %}
+
+<h2 class="section-title">Outliers · mucho tiempo, poco resultado</h2>
+{% if outliers %}
+<table class="report-table">
+  <thead>
+    <tr>
+      <th>Usuario</th>
+      <th>País</th>
+      <th class="num">Tiempo (min)</th>
+      <th class="num">Score</th>
+      <th>Severidad</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for o in outliers %}
+    <tr>
+      <td>{{ o.user_id }}</td>
+      <td>{{ o.location }}</td>
+      <td class="num">{{ o.total_duration_min }}</td>
+      <td class="num">{{ o.score_pct }}%</td>
+      <td>{{ o.severity }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="empty-state">Sin outliers para los filtros aplicados</div>
+{% endif %}
+{% endblock %}
