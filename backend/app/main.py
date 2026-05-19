@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import DATA_API_URL, DATA_DIR
-from app.routers import ingest, mdm, training
+from app.routers import ingest, mdm, reports, training
 from app.services.data_fetcher import load_from_api
 from app.storage.memory import store
 
@@ -62,6 +62,7 @@ app.add_middleware(
 app.include_router(ingest.router, prefix="/api/v1")
 app.include_router(mdm.router, prefix="/api/v1")
 app.include_router(training.router, prefix="/api/v1")
+app.include_router(reports.router, prefix="/api/v1")
 
 
 @app.get("/")
