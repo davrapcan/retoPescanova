@@ -4,7 +4,6 @@ import { Card } from '@/components/ui/Card'
 import { KPICard } from '@/components/ui/KPICard'
 import { RiskBanner } from '@/components/ui/RiskBanner'
 import { EmptyState } from '@/components/ui/EmptyState'
-import { ReportButton } from '@/components/ui/ReportButton'
 import { CountryDoubleBar } from '@/components/charts/CountryDoubleBar'
 import { TripleSparkline } from '@/components/charts/TripleSparkline'
 import { FrictionHeatmap } from '@/components/charts/FrictionHeatmap'
@@ -72,15 +71,12 @@ export default function TrainingPage() {
       }}
     >
       {/* ── Risk Banner ── */}
-      <div className="flex items-start gap-2">
-        <div className="flex-1">
-          {banner.loading ? (
-            <Skeleton h="h-9" />
-          ) : bd ? (
-            <RiskBanner severity={bd.severity} title={bd.title} description={bd.description} />
-          ) : null}
-        </div>
-        <ReportButton kind="training" />
+      <div>
+        {banner.loading ? (
+          <Skeleton h="h-9" />
+        ) : bd ? (
+          <RiskBanner severity={bd.severity} title={bd.title} description={bd.description} />
+        ) : null}
       </div>
 
       {/* ── 4 KPI Cards ── */}

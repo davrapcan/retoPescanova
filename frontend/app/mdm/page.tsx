@@ -6,7 +6,6 @@ import { KPICard } from '@/components/ui/KPICard'
 import { RiskBanner } from '@/components/ui/RiskBanner'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { LegendDots } from '@/components/ui/LegendDots'
-import { ReportButton } from '@/components/ui/ReportButton'
 import {
   useMDMBanner,
   useMDMByOffice,
@@ -66,19 +65,16 @@ export default function MDMPage() {
       }}
     >
       {/* ── Risk Banner ──────────────────────────────────────────── */}
-      <div className="flex items-start gap-2">
-        <div className="flex-1">
-          {banner.loading ? (
-            <Skeleton className="h-10" />
-          ) : banner.data ? (
-            <RiskBanner
-              severity={banner.data.severity}
-              title={banner.data.title}
-              description={banner.data.description}
-            />
-          ) : null}
-        </div>
-        <ReportButton kind="mdm" />
+      <div>
+        {banner.loading ? (
+          <Skeleton className="h-10" />
+        ) : banner.data ? (
+          <RiskBanner
+            severity={banner.data.severity}
+            title={banner.data.title}
+            description={banner.data.description}
+          />
+        ) : null}
       </div>
 
       {/* ── KPI Row ──────────────────────────────────────────────── */}
