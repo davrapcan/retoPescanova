@@ -1,6 +1,9 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { TimeRangePicker } from './TimeRangePicker'
+import { RefreshPicker } from './RefreshPicker'
+import { ActiveFilters } from './ActiveFilters'
 
 const TABS = [
   { href: '/mdm', label: 'MDM · Parches' },
@@ -10,10 +13,11 @@ const TABS = [
 
 export function DashboardHeader() {
   const pathname = usePathname()
+  const showControls = pathname.startsWith('/mdm') || pathname.startsWith('/training')
 
   return (
     <header
-      className="flex items-center gap-6 px-4 py-2 bg-white border-b"
+      className="flex items-center gap-4 px-4 py-2 bg-white border-b"
       style={{ borderColor: 'var(--border)' }}
     >
       {/* Logo */}
@@ -51,6 +55,18 @@ export function DashboardHeader() {
           )
         })}
       </nav>
+
+      {showControls && (
+        <>
+          <div className="flex-1 flex items-center min-w-0">
+            <ActiveFilters />
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <TimeRangePicker />
+            <RefreshPicker />
+          </div>
+        </>
+      )}
     </header>
   )
 }

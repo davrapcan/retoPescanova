@@ -5,9 +5,11 @@ import { chartPalette } from '@/lib/theme'
 
 interface StackedHorizontalBarProps {
   data: MDMOfficeItem[]
+  onSelect?: (office: MDMOfficeItem) => void
+  activeOffice?: string
 }
 
-export function StackedHorizontalBar({ data }: StackedHorizontalBarProps) {
+export function StackedHorizontalBar({ data, onSelect, activeOffice }: StackedHorizontalBarProps) {
   // Sort descending by total; inverse: true puts index 0 at the top
   const sorted = [...data].sort((a, b) => b.total - a.total)
   const labels = sorted.map((o) => `${o.office_code} (${o.total})`)
@@ -39,7 +41,20 @@ export function StackedHorizontalBar({ data }: StackedHorizontalBarProps) {
       type: 'category',
       data: labels,
       inverse: true,
-      axisLabel: { fontSize: 9, color: '#64748B' },
+      axisLabel: {
+        fontSize: 9,
+        color: '#64748B',
+        formatter: (value: string, idx: number) => {
+          const item = sorted[idx]
+          if (item && activeOffice && item.office === activeOffice) {
+            return `{active|${value}}`
+          }
+          return value
+        },
+        rich: {
+          active: { color: '#005A9C', fontWeight: 'bold', fontSize: 9 },
+        },
+      },
       axisTick: { show: false },
       axisLine: { show: false },
     },
@@ -54,8 +69,18 @@ export function StackedHorizontalBar({ data }: StackedHorizontalBarProps) {
   return (
     <ReactECharts
       option={option}
-      style={{ width: '100%', height: '100%' }}
+      style={{ width: '100%', height: '100%', cursor: onSelect ? 'pointer' : 'default' }}
       opts={{ renderer: 'svg' }}
+      onEvents={
+        onSelect
+          ? {
+              click: (params: { dataIndex?: number }) => {
+                const item = sorted[params.dataIndex ?? -1]
+                if (item) onSelect(item)
+              },
+            }
+          : undefined
+      }
     />
   )
 }

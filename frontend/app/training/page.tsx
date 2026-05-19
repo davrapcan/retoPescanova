@@ -20,6 +20,7 @@ import {
   useTrainingDistribution,
   useTrainingOutliers,
 } from '@/hooks/useTraining'
+import { useDashboardFilters } from '@/lib/filters'
 import type { Severity } from '@/lib/theme'
 
 function Skeleton({ h = 'h-8', full = false }: { h?: string; full?: boolean }) {
@@ -32,6 +33,8 @@ function Skeleton({ h = 'h-8', full = false }: { h?: string; full?: boolean }) {
 }
 
 export default function TrainingPage() {
+  const { country, setCountry } = useDashboardFilters()
+
   const kpis         = useTrainingKpis()
   const banner       = useTrainingBanner()
   const byCountry    = useTrainingByCountry()
@@ -62,11 +65,14 @@ export default function TrainingPage() {
 
   return (
     <div
-      className="flex flex-col"
-      style={{ gap: '6px', height: 'calc(100vh - 52px)', overflow: 'hidden' }}
+      className="grid"
+      style={{
+        gap: '6px',
+        gridTemplateRows: 'auto auto 240px 320px 220px',
+      }}
     >
       {/* ── Risk Banner ── */}
-      <div className="shrink-0">
+      <div>
         {banner.loading ? (
           <Skeleton h="h-9" />
         ) : bd ? (
@@ -75,7 +81,7 @@ export default function TrainingPage() {
       </div>
 
       {/* ── 4 KPI Cards ── */}
-      <div className="grid grid-cols-4 shrink-0" style={{ gap: '6px' }}>
+      <div className="grid grid-cols-4" style={{ gap: '6px' }}>
         {kpis.loading ? (
           Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} h="h-[72px]" />)
         ) : kd ? (
@@ -118,26 +124,42 @@ export default function TrainingPage() {
         )}
       </div>
 
-      {/* ── Row 2: Countries + Timeline — fixed height ── */}
-      <div className="grid grid-cols-2 shrink-0" style={{ gap: '6px', height: '165px' }}>
+      {/* ── Row 2: Countries + Timeline ── */}
+      <div
+        className="grid grid-cols-2 overflow-hidden min-h-0"
+        style={{ gap: '6px', gridTemplateRows: 'minmax(0, 1fr)' }}
+      >
         <Card
           title="¿Qué países están en riesgo formativo?"
-          onClick={byCountry.data?.length ? () => setCountriesModalOpen(true) : undefined}
+          className="h-full"
+          inspectData={byCountry.data}
+          lastUpdated={byCountry.lastUpdated}
+          panelId="training-by-country"
         >
           {byCountry.loading ? (
             <div className="flex flex-col gap-1.5">
               {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} h="h-3" />)}
             </div>
           ) : byCountry.data?.length ? (
-            <div className="h-full" style={{ overflowY: 'auto' }}>
-              <CountryDoubleBar data={byCountry.data} />
+            <div className="h-full overflow-y-auto">
+              <CountryDoubleBar
+                data={byCountry.data}
+                activeCountry={country}
+                onSelect={(c) => setCountry(country === c.location ? undefined : c.location)}
+              />
             </div>
           ) : (
             <EmptyState />
           )}
         </Card>
 
-        <Card title="¿Mejora la formación mes a mes?">
+        <Card
+          title="¿Mejora la formación mes a mes?"
+          className="h-full"
+          inspectData={timeline.data}
+          lastUpdated={timeline.lastUpdated}
+          panelId="training-timeline"
+        >
           {timeline.loading ? (
             <div className="flex flex-col gap-3 pt-1">
               {Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} h="h-5" />)}
@@ -152,9 +174,15 @@ export default function TrainingPage() {
         </Card>
       </div>
 
-      {/* ── Row 3: Heatmap protagonista — fixed height ── */}
-      <div className="shrink-0" style={{ height: '210px' }}>
-        <Card title="¿Qué módulos generan más fricción por país?" className="h-full">
+      {/* ── Row 3: Heatmap protagonista ── */}
+      <div className="min-h-0">
+        <Card
+          title="¿Qué módulos generan más fricción por país?"
+          className="h-full"
+          inspectData={friction.data?.cells}
+          lastUpdated={friction.lastUpdated}
+          panelId="training-friction"
+        >
           {friction.loading ? (
             <Skeleton full />
           ) : friction.data ? (
@@ -165,20 +193,18 @@ export default function TrainingPage() {
         </Card>
       </div>
 
-      {/* ── Detail Modals ── */}
-      <CountriesDetailModal
-        open={countriesModalOpen}
-        onClose={() => setCountriesModalOpen(false)}
-        data={byCountry.data}
-      />
-      <UsersDetailModal
-        open={usersModalOpen}
-        onClose={() => setUsersModalOpen(false)}
-      />
-
-      {/* ── Row 4: Histogram + Outliers — fills remaining space ── */}
-      <div className="grid grid-cols-2 flex-1 min-h-0" style={{ gap: '6px' }}>
-        <Card title="¿Cómo se distribuye el score?" className="h-full">
+      {/* ── Row 4: Histogram + Outliers ── */}
+      <div
+        className="grid grid-cols-2 overflow-hidden min-h-0"
+        style={{ gap: '6px', gridTemplateRows: 'minmax(0, 1fr)' }}
+      >
+        <Card
+          title="¿Cómo se distribuye el score?"
+          className="h-full"
+          inspectData={distribution.data}
+          lastUpdated={distribution.lastUpdated}
+          panelId="training-distribution"
+        >
           {distribution.loading ? (
             <Skeleton full />
           ) : distribution.data?.length ? (
@@ -191,7 +217,9 @@ export default function TrainingPage() {
         <Card
           title="¿Quién invierte más tiempo con peor resultado?"
           className="h-full"
-          onClick={outliers.data?.length ? () => setUsersModalOpen(true) : undefined}
+          inspectData={outliers.data}
+          lastUpdated={outliers.lastUpdated}
+          panelId="training-outliers"
         >
           <div className="h-full overflow-y-auto">
             {outliers.loading ? (
