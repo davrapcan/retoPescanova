@@ -113,7 +113,7 @@ export default function TrainingPage() {
       </div>
 
       {/* ── Row 2: Countries + Timeline — fixed height ── */}
-      <div className="grid grid-cols-2 shrink-0" style={{ gap: '6px', height: '180px' }}>
+      <div className="grid grid-cols-2 shrink-0" style={{ gap: '6px', height: '130px' }}>
         <Card title="¿Qué países están en riesgo formativo?">
           {byCountry.loading ? (
             <div className="flex flex-col gap-1.5">

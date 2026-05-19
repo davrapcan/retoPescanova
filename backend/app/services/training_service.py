@@ -123,9 +123,10 @@ def get_friction(
     p95 = float(store.training_events["duration_min"].quantile(0.95))
 
     cells = []
-    module_friction: dict[str, list[float]] = {}
+    assignment_friction: dict[str, list[float]] = {}
 
-    for (module, loc), grp in events.groupby(["module_name", "location"]):
+    # Group by Assignment Name (course/campaign level) instead of Module Name
+    for (assignment, loc), grp in events.groupby(["assignment_name", "location"]):
         friction = compute_friction(grp, p95_duration=p95)
         avg_dur = float(grp["duration_min"].mean())
         n_completed = grp["completed_at"].notna().sum()
@@ -133,7 +134,7 @@ def get_friction(
         low_sample = len(grp) < LOW_SAMPLE_THRESHOLD
 
         cells.append(TrainingFrictionCell(
-            module_name=module,
+            module_name=assignment,
             location=loc,
             location_iso=country_to_iso(loc),
             friction_score=friction,
@@ -143,22 +144,30 @@ def get_friction(
             low_sample=low_sample,
         ))
         if friction is not None:
-            module_friction.setdefault(module, []).append(friction)
+            assignment_friction.setdefault(assignment, []).append(friction)
 
-    # Modules ordered by mean friction desc (top 8)
-    module_mean = {m: sum(v) / len(v) for m, v in module_friction.items()}
-    top_modules = sorted(module_mean, key=lambda m: module_mean[m], reverse=True)[:8]
+    # Drop assignments with negligible total volume (tests / orphan rows).
+    assignment_totals = events.groupby("assignment_name").size()
+    valid_assignments = set(assignment_totals[assignment_totals >= 20].index)
+
+    # Assignments ordered by mean friction desc (top 8)
+    assignment_mean = {
+        m: sum(v) / len(v)
+        for m, v in assignment_friction.items()
+        if m in valid_assignments
+    }
+    top_assignments = sorted(assignment_mean, key=lambda m: assignment_mean[m], reverse=True)[:8]
 
     # Countries ordered by event volume desc
     country_counts = events.groupby("location").size().sort_values(ascending=False)
     countries = list(country_counts.index)
 
-    # Filter cells to only top modules
-    cells = [c for c in cells if c.module_name in top_modules]
+    # Filter cells to only top assignments
+    cells = [c for c in cells if c.module_name in top_assignments]
 
     return TrainingFriction(
         cells=cells,
-        modules=top_modules,
+        modules=top_assignments,
         countries=countries,
         p95_duration_global=round(p95, 1),
     )
@@ -225,13 +234,13 @@ def get_banner() -> TrainingBanner:
 
     top_module: Optional[str] = None
     p95 = float(events["duration_min"].quantile(0.95))
-    module_frictions = {}
-    for mod, grp in events.groupby("module_name"):
+    assignment_frictions = {}
+    for assignment, grp in events.groupby("assignment_name"):
         f = compute_friction(grp, p95_duration=p95)
         if f is not None:
-            module_frictions[mod] = f
-    if module_frictions:
-        top_module = max(module_frictions, key=lambda m: module_frictions[m])
+            assignment_frictions[assignment] = f
+    if assignment_frictions:
+        top_module = max(assignment_frictions, key=lambda m: assignment_frictions[m])
 
     if global_completion < 0.50:
         return TrainingBanner(

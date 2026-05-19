@@ -10,7 +10,7 @@ export function OutliersList({ data }: OutliersListProps) {
 
   return (
     <div className="flex flex-col gap-2 w-full">
-      <p style={{ fontSize: '9px', color: 'var(--text-tertiary)', lineHeight: 1.4 }}>
+      <p style={{ fontSize: '10px', color: 'var(--text-tertiary)', lineHeight: 1.4 }}>
         Usuarios con tiempo &gt; p90 y score &lt; 30% — mayor esfuerzo, menor resultado.
       </p>
       <div className="flex flex-col gap-1.5">
@@ -34,18 +34,18 @@ export function OutliersList({ data }: OutliersListProps) {
                 style={{ width: '3px', height: '28px', borderRadius: '2px', backgroundColor: accentColor }}
               />
               <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                <span style={{ fontSize: '10px', fontWeight: 600, color: 'var(--text-primary)', fontFamily: 'monospace' }}>
+                <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-primary)', fontFamily: 'monospace' }}>
                   {user.user_id}
                 </span>
-                <span style={{ fontSize: '9px', color: 'var(--text-secondary)' }}>
+                <span style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>
                   {user.location}
                 </span>
               </div>
               <div className="flex flex-col items-end gap-0.5 shrink-0">
-                <span style={{ fontSize: '10px', fontWeight: 600, color: 'var(--brand-blue)' }}>
+                <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--brand-blue)' }}>
                   {user.total_duration_min} min
                 </span>
-                <span style={{ fontSize: '10px', fontWeight: 600, color: accentColor }}>
+                <span style={{ fontSize: '11px', fontWeight: 600, color: accentColor }}>
                   {Math.min(user.score_pct, 100).toFixed(1)}%
                 </span>
               </div>

@@ -26,14 +26,14 @@ export function ScoreHistogram({ data }: ScoreHistogramProps) {
     .reduce((s, d) => s + d.count, 0)
 
   const option = {
-    grid: { top: 8, bottom: 28, left: 32, right: 8, containLabel: false },
+    grid: { top: 4, bottom: 18, left: 32, right: 8, containLabel: false },
     xAxis: {
       type: 'category',
       data: data.map((d) => d.label),
       axisLine: { show: false },
       axisTick: { show: false },
       axisLabel: {
-        fontSize: 8,
+        fontSize: 10,
         color: '#94A3B8',
         interval: 1,
         rotate: 0,
@@ -44,7 +44,7 @@ export function ScoreHistogram({ data }: ScoreHistogramProps) {
       type: 'value',
       axisLine: { show: false },
       axisTick: { show: false },
-      axisLabel: { fontSize: 8, color: '#94A3B8' },
+      axisLabel: { fontSize: 10, color: '#94A3B8' },
       splitLine: { lineStyle: { color: '#E2E8F0', width: 0.5 } },
     },
     tooltip: {
@@ -83,7 +83,7 @@ export function ScoreHistogram({ data }: ScoreHistogramProps) {
       </div>
       <p
         className="mt-1 shrink-0"
-        style={{ fontSize: '10px', color: 'var(--critical)', fontWeight: 500 }}
+        style={{ fontSize: '11px', color: 'var(--critical)', fontWeight: 500 }}
       >
         {criticalCount.toLocaleString('es-ES')} usuarios en zona crítica (score &lt;20%)
       </p>

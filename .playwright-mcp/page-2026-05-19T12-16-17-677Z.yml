@@ -1,0 +1,21 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]: P
+      - generic [ref=e5]: Cyber Risk Cockpit
+    - navigation [ref=e7]:
+      - link "MDM · Parches" [ref=e8] [cursor=pointer]:
+        - /url: /mdm
+      - link "Formación" [ref=e9] [cursor=pointer]:
+        - /url: /training
+      - link "Cargar datos" [ref=e10] [cursor=pointer]:
+        - /url: /upload
+  - main [ref=e11]:
+    - generic [ref=e12]:
+      - generic [ref=e20]:
+        - paragraph [ref=e22]: ¿Qué países están en riesgo formativo?
+        - paragraph [ref=e31]: ¿Mejora la formación mes a mes?
+      - paragraph [ref=e38]: ¿Qué módulos generan más fricción por país?
+      - generic [ref=e41]:
+        - paragraph [ref=e44]: ¿Cómo se distribuye el score?
+        - paragraph [ref=e49]: ¿Quién invierte más tiempo con peor resultado?
