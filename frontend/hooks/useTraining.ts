@@ -9,6 +9,7 @@ import type {
   TrainingKpis,
   TrainingOutlierItem,
   TrainingTimelineItem,
+  TrainingUserItem,
 } from '@/lib/types'
 import {
   mockTrainingBanner,
@@ -85,4 +86,22 @@ export function useTrainingOutliers(limit = 4) {
 
 export function useTrainingBanner() {
   return useMockOrFetch<TrainingBanner>(mockTrainingBanner, () => api.training.banner())
+}
+
+export function useTrainingUsers(sort: 'best' | 'worst', limit = 50, enabled = true) {
+  const [data, setData] = useState<TrainingUserItem[] | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!enabled) return
+    setLoading(true)
+    setError(null)
+    api.training.users(sort, limit)
+      .then((r) => setData(r.data))
+      .catch((e) => setError(String(e)))
+      .finally(() => setLoading(false))
+  }, [sort, limit, enabled])
+
+  return { data, loading, error }
 }

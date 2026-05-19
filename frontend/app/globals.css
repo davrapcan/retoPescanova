@@ -30,3 +30,12 @@ body {
   font-family: 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
 }
+
+.card-clickable:hover {
+  border-color: var(--brand-blue) !important;
+  box-shadow: 0 4px 14px -4px rgba(0, 90, 156, 0.18);
+}
+.card-clickable:focus-visible {
+  outline: 2px solid var(--brand-blue);
+  outline-offset: 2px;
+}

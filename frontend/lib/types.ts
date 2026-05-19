@@ -142,3 +142,15 @@ export interface TrainingBanner {
   top_friction_module: string | null
   global_completion_rate: number
 }
+
+export interface TrainingUserItem {
+  user_id: string
+  location: string
+  score_pct: number
+  completion_rate: number
+  total_duration_min: number
+  modules_completed: number
+  modules_assigned: number
+}
+
+export type TrainingUsers = TrainingUserItem[]

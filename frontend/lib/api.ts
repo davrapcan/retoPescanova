@@ -19,6 +19,7 @@ import type {
   TrainingOutliers,
   TrainingTimeline,
   TrainingTimelineItem,
+  TrainingUserItem,
 } from './types'
 
 const BASE_URL = 'http://localhost:8000/api/v1'
@@ -70,6 +71,9 @@ export const api = {
 
     outliers: (limit = 4, params?: { date_from?: string; date_to?: string; location?: string }) =>
       fetchApi<TrainingOutlierItem[]>(`/training/outliers?limit=${limit}${toQuery(params, false)}`),
+
+    users: (sort: 'best' | 'worst' = 'worst', limit = 50, params?: { location?: string }) =>
+      fetchApi<TrainingUserItem[]>(`/training/users?sort=${sort}&limit=${limit}${toQuery(params, false)}`),
 
     banner: () =>
       fetchApi<TrainingBanner>('/training/banner'),
