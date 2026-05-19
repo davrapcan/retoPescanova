@@ -1,4 +1,4 @@
-"""Friction Score calculation — stub, to be implemented in C1."""
+"""Friction Score calculation per module×country cell."""
 from typing import Optional
 import pandas as pd
 
@@ -16,6 +16,20 @@ def compute_friction(
 ) -> Optional[float]:
     """
     friction = 100 * (0.55 * duration_norm + 0.45 * incomplete_rate)
-    Returns None if no events (empty cell).
+    Returns None if events is empty.
     """
-    raise NotImplementedError
+    n = len(events)
+    if n == 0:
+        return None
+
+    avg_duration = events["duration_min"].mean()
+    duration_norm = min(avg_duration / p95_duration, 1.0)
+
+    n_completed = events["completed_at"].notna().sum()
+    incomplete_rate = (n - n_completed) / n
+
+    friction = 100.0 * (
+        FRICTION_WEIGHT_DURATION * duration_norm
+        + FRICTION_WEIGHT_INCOMPLETE * incomplete_rate
+    )
+    return round(friction, 1)
