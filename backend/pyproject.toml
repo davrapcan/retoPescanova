@@ -1,0 +1,17 @@
+[project]
+name = "pescanova-backend"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.110.0",
+    "uvicorn[standard]>=0.29.0",
+    "pandas>=2.2.0",
+    "openpyxl>=3.1.0",
+    "pydantic>=2.0.0",
+    "python-multipart>=0.0.9",
+    "pyarrow>=16.0.0",
+]
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.backends.legacy:build"
