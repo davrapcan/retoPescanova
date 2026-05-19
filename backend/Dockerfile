@@ -19,6 +19,7 @@ RUN pip install --no-cache-dir \
     "pydantic>=2.0.0" \
     python-multipart==0.0.9 \
     pyarrow==16.0.0 \
+    "httpx>=0.28.0" \
     "weasyprint>=63.0" \
     jinja2==3.1.4
 
