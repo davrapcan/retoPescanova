@@ -58,6 +58,7 @@ export function Card({
         style={{
           border: '0.5px solid var(--border)',
           padding: '12px',
+          overflow: 'hidden',
           cursor: clickable ? 'pointer' : canExpand ? 'zoom-in' : 'default',
           transition: 'box-shadow 0.15s ease, border-color 0.15s ease',
         }}
