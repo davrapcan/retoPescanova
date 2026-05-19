@@ -114,7 +114,7 @@ export function TripleSparkline({ data }: TripleSparklineProps) {
   const months = data.map((d) => d.month)
 
   return (
-    <div className="flex flex-col gap-3 w-full">
+    <div className="flex flex-col w-full h-full justify-around" style={{ gap: '8px' }}>
       <Sparkline
         values={data.map((d) => d.completion_rate * 100)}
         color="var(--ok)"
