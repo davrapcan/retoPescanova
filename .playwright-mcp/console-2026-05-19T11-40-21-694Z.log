@@ -1,0 +1,188 @@
+[    1692ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom-client.development.js:25630
+[  221884ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom-client.development.js:25630
+[  410354ms] [LOG] [Fast Refresh] rebuilding @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/dev/hot-reloader/app/hot-reloader-app.js:196
+[  411161ms] [LOG] [Fast Refresh] rebuilding @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/dev/hot-reloader/app/hot-reloader-app.js:196
+[  411303ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/_next/static/webpack/61dc7277c4e4e60f.webpack.hot-update.json:0
+[  413522ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/_next/static/webpack/025e4963b2e54c74.webpack.hot-update.json:0
+[  414187ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/training?_rsc=_8i4EGRz95_4o9IX:0
+[  414192ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/training:0
+[  414823ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ webpack-internal:///(pages-dir-browser)/./node_modules/react-dom/cjs/react-dom.development.js:29889
+[  415036ms] TypeError: __webpack_modules__[moduleId] is not a function
+    at __webpack_require__ (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\webpack-runtime.js:25:42)
+    at eval (webpack-internal:///(rsc)/./node_modules/next/dist/server/app-render/encryption-utils.js:40:35)
+    at <unknown> (rsc)/./node_modules/next/dist/server/app-render/encryption-utils.js (C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\vendor-chunks\next.js:1773:1)
+    at __webpack_require__ (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\webpack-runtime.js:25:42)
+    at eval (webpack-internal:///(rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader/index.js?name=app%2Ftraining%2Fpage&page=%2Ftraining%2Fpage&appPaths=%2Ftraining%2Fpage&pagePath=private-next-app-dir%2Ftraining%2Fpage.tsx&appDir=C%3A%5CUsers%5CUsuario%5CDocuments%5CProjects%5CretoPescanova%5Cfrontend%5Capp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=C%3A%5CUsers%5CUsuario%5CDocuments%5CProjects%5CretoPescanova%5Cfrontend&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=standalone&preferredRegion=&middlewareConfig=e30%3D&isGlobalNotFoundEnabled=!:28:103)
+    at <unknown> (rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader/index.js?name=app%2Ftraining%2Fpage&page=%2Ftraining%2Fpage&appPaths=%2Ftraining%2Fpage&pagePath=private-next-app-dir%2Ftraining%2Fpage.tsx&appDir=C%3A%5CUsers%5CUsuario%5CDocuments%5CProjects%5CretoPescanova%5Cfrontend%5Capp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=C%3A%5CUsers%5CUsuario%5CDocuments%5CProjects%5CretoPescanova%5Cfrontend&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=standalone&preferredRegion=&middlewareConfig=e30%3D&isGlobalNotFoundEnabled=! (C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\app\training\page.js:66:1)
+    at __webpack_require__ (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\webpack-runtime.js:25:42)
+    at __webpack_exec__ (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\app\training\page.js:433:39)
+    at <unknown> (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\app\training\page.js:434:268)
+    at __webpack_require__.X (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\webpack-runtime.js:155:21)
+    at <unknown> (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\app\training\page.js:434:47)
+    at Object.<anonymous> (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\app\training\page.js:437:3)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14)
+    at Object..js (node:internal/modules/cjs/loader:1895:10)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/modules/cjs/loader:1282:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1487:12)
+    at mod.require (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\require-hook.js:68:28)
+    at require (node:internal/modules/helpers:135:16)
+    at requirePage (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\require.js:99:80)
+    at loadComponentsImpl (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\load-components.js:132:57)
+    at async DevServer.findPageComponentsImpl (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\next-server.js:900:36)
+    at async DevServer.findPageComponents (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\dev\next-dev-server.js:706:16)
+    at async DevServer.renderPageComponent (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\base-server.js:1468:24)
+    at async DevServer.renderToResponseImpl (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\base-server.js:1522:32)
+    at async DevServer.pipeImpl (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\base-server.js:1026:25)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\next-server.js:394:17)
+    at async DevServer.handleRequestImpl (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\base-server.js:917:17)
+    at async (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\dev\next-dev-server.js:400:20)
+    at async Span.traceAsyncFn (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\trace\trace.js:157:20)
+    at async DevServer.handleRequest (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\dev\next-dev-server.js:396:24)
+    at async invokeRender (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\lib\router-server.js:240:21)
+    at async handleRequest (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\lib\router-server.js:437:24)
+    at async requestHandlerImpl (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\lib\router-server.js:485:13)
+    at async Server.requestListener (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\lib\start-server.js:226:13)
+[  415034ms] [LOG] [HMR] connected @ webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/client/dev/hot-reloader/pages/websocket.js:45
+[  415485ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/_next/static/webpack/367761047034015b.webpack.hot-update.json:0
+[  415485ms] [WARNING] [Fast Refresh] performing full reload because your application had an unrecoverable error @ webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/client/dev/hot-reloader/pages/hot-reloader-pages.js:347
+[  415823ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/training:0
+[  416442ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ webpack-internal:///(pages-dir-browser)/./node_modules/react-dom/cjs/react-dom.development.js:29889
+[  416467ms] TypeError: __webpack_modules__[moduleId] is not a function
+    at __webpack_require__ (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\webpack-runtime.js:25:42)
+    at eval (webpack-internal:///(rsc)/./node_modules/next/dist/server/app-render/encryption-utils.js:40:35)
+    at <unknown> (rsc)/./node_modules/next/dist/server/app-render/encryption-utils.js (C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\vendor-chunks\next.js:1773:1)
+    at __webpack_require__ (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\webpack-runtime.js:25:42)
+    at eval (webpack-internal:///(rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader/index.js?name=app%2Ftraining%2Fpage&page=%2Ftraining%2Fpage&appPaths=%2Ftraining%2Fpage&pagePath=private-next-app-dir%2Ftraining%2Fpage.tsx&appDir=C%3A%5CUsers%5CUsuario%5CDocuments%5CProjects%5CretoPescanova%5Cfrontend%5Capp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=C%3A%5CUsers%5CUsuario%5CDocuments%5CProjects%5CretoPescanova%5Cfrontend&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=standalone&preferredRegion=&middlewareConfig=e30%3D&isGlobalNotFoundEnabled=!:28:103)
+    at <unknown> (rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader/index.js?name=app%2Ftraining%2Fpage&page=%2Ftraining%2Fpage&appPaths=%2Ftraining%2Fpage&pagePath=private-next-app-dir%2Ftraining%2Fpage.tsx&appDir=C%3A%5CUsers%5CUsuario%5CDocuments%5CProjects%5CretoPescanova%5Cfrontend%5Capp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=C%3A%5CUsers%5CUsuario%5CDocuments%5CProjects%5CretoPescanova%5Cfrontend&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=standalone&preferredRegion=&middlewareConfig=e30%3D&isGlobalNotFoundEnabled=! (C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\app\training\page.js:66:1)
+    at __webpack_require__ (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\webpack-runtime.js:25:42)
+    at __webpack_exec__ (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\app\training\page.js:433:39)
+    at <unknown> (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\app\training\page.js:434:268)
+    at __webpack_require__.X (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\webpack-runtime.js:155:21)
+    at <unknown> (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\app\training\page.js:434:47)
+    at Object.<anonymous> (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\app\training\page.js:437:3)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14)
+    at Object..js (node:internal/modules/cjs/loader:1895:10)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/modules/cjs/loader:1282:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1487:12)
+    at mod.require (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\require-hook.js:68:28)
+    at require (node:internal/modules/helpers:135:16)
+    at requirePage (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\require.js:99:80)
+    at loadComponentsImpl (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\load-components.js:132:57)
+    at async DevServer.findPageComponentsImpl (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\next-server.js:900:36)
+    at async DevServer.findPageComponents (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\dev\next-dev-server.js:706:16)
+    at async DevServer.renderPageComponent (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\base-server.js:1468:24)
+    at async DevServer.renderToResponseImpl (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\base-server.js:1522:32)
+    at async DevServer.pipeImpl (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\base-server.js:1026:25)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\next-server.js:394:17)
+    at async DevServer.handleRequestImpl (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\base-server.js:917:17)
+    at async (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\dev\next-dev-server.js:400:20)
+    at async Span.traceAsyncFn (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\trace\trace.js:157:20)
+    at async DevServer.handleRequest (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\dev\next-dev-server.js:396:24)
+    at async invokeRender (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\lib\router-server.js:240:21)
+    at async handleRequest (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\lib\router-server.js:437:24)
+    at async requestHandlerImpl (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\lib\router-server.js:485:13)
+    at async Server.requestListener (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\lib\start-server.js:226:13)
+[  416466ms] [LOG] [HMR] connected @ webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/client/dev/hot-reloader/pages/websocket.js:45
+[  419750ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/_next/static/webpack/367761047034015b.webpack.hot-update.json:0
+[  419751ms] [WARNING] [Fast Refresh] performing full reload because your application had an unrecoverable error @ webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/client/dev/hot-reloader/pages/hot-reloader-pages.js:347
+[  420069ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/training:0
+[  421840ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ webpack-internal:///(pages-dir-browser)/./node_modules/react-dom/cjs/react-dom.development.js:29889
+[  421870ms] TypeError: __webpack_modules__[moduleId] is not a function
+    at __webpack_require__ (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\webpack-runtime.js:25:42)
+    at eval (webpack-internal:///(rsc)/./node_modules/next/dist/server/app-render/encryption-utils.js:40:35)
+    at <unknown> (rsc)/./node_modules/next/dist/server/app-render/encryption-utils.js (C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\vendor-chunks\next.js:1773:1)
+    at __webpack_require__ (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\webpack-runtime.js:25:42)
+    at eval (webpack-internal:///(rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader/index.js?name=app%2Ftraining%2Fpage&page=%2Ftraining%2Fpage&appPaths=%2Ftraining%2Fpage&pagePath=private-next-app-dir%2Ftraining%2Fpage.tsx&appDir=C%3A%5CUsers%5CUsuario%5CDocuments%5CProjects%5CretoPescanova%5Cfrontend%5Capp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=C%3A%5CUsers%5CUsuario%5CDocuments%5CProjects%5CretoPescanova%5Cfrontend&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=standalone&preferredRegion=&middlewareConfig=e30%3D&isGlobalNotFoundEnabled=!:28:103)
+    at <unknown> (rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader/index.js?name=app%2Ftraining%2Fpage&page=%2Ftraining%2Fpage&appPaths=%2Ftraining%2Fpage&pagePath=private-next-app-dir%2Ftraining%2Fpage.tsx&appDir=C%3A%5CUsers%5CUsuario%5CDocuments%5CProjects%5CretoPescanova%5Cfrontend%5Capp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=C%3A%5CUsers%5CUsuario%5CDocuments%5CProjects%5CretoPescanova%5Cfrontend&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=standalone&preferredRegion=&middlewareConfig=e30%3D&isGlobalNotFoundEnabled=! (C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\app\training\page.js:66:1)
+    at __webpack_require__ (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\webpack-runtime.js:25:42)
+    at __webpack_exec__ (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\app\training\page.js:433:39)
+    at <unknown> (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\app\training\page.js:434:268)
+    at __webpack_require__.X (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\webpack-runtime.js:155:21)
+    at <unknown> (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\app\training\page.js:434:47)
+    at Object.<anonymous> (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\app\training\page.js:437:3)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14)
+    at Object..js (node:internal/modules/cjs/loader:1895:10)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/modules/cjs/loader:1282:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1487:12)
+    at mod.require (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\require-hook.js:68:28)
+    at require (node:internal/modules/helpers:135:16)
+    at requirePage (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\require.js:99:80)
+    at loadComponentsImpl (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\load-components.js:132:57)
+    at async DevServer.findPageComponentsImpl (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\next-server.js:900:36)
+    at async DevServer.findPageComponents (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\dev\next-dev-server.js:706:16)
+    at async DevServer.renderPageComponent (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\base-server.js:1468:24)
+    at async DevServer.renderToResponseImpl (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\base-server.js:1522:32)
+    at async DevServer.pipeImpl (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\base-server.js:1026:25)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\next-server.js:394:17)
+    at async DevServer.handleRequestImpl (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\base-server.js:917:17)
+    at async (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\dev\next-dev-server.js:400:20)
+    at async Span.traceAsyncFn (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\trace\trace.js:157:20)
+    at async DevServer.handleRequest (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\dev\next-dev-server.js:396:24)
+    at async invokeRender (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\lib\router-server.js:240:21)
+    at async handleRequest (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\lib\router-server.js:437:24)
+    at async requestHandlerImpl (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\lib\router-server.js:485:13)
+    at async Server.requestListener (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\lib\start-server.js:226:13)
+[  421869ms] [LOG] [HMR] connected @ webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/client/dev/hot-reloader/pages/websocket.js:45
+[  423145ms] [WARNING] [Fast Refresh] performing full reload because your application had an unrecoverable error @ webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/client/dev/hot-reloader/pages/hot-reloader-pages.js:347
+[  424931ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom-client.development.js:25630
+[  426216ms] [LOG] [Fast Refresh] rebuilding @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/dev/hot-reloader/app/hot-reloader-app.js:196
+[  426470ms] [LOG] [Fast Refresh] done in 254ms @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/dev/report-hmr-latency.js:13
+[  427792ms] [LOG] [Fast Refresh] done in 1577ms @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/dev/report-hmr-latency.js:13
+[  431174ms] [LOG] [Fast Refresh] rebuilding @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/dev/hot-reloader/app/hot-reloader-app.js:196
+[  431817ms] [LOG] [Fast Refresh] rebuilding @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/dev/hot-reloader/app/hot-reloader-app.js:196
+[  431879ms] [LOG] [Fast Refresh] done in 61ms @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/dev/report-hmr-latency.js:13
+[  432954ms] [LOG] [Fast Refresh] done in 1137ms @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/dev/report-hmr-latency.js:13
+[  433507ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/training?_rsc=_8i4EGRz95_4o9IX:0
+[  433850ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/training:0
+[  434286ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ webpack-internal:///(pages-dir-browser)/./node_modules/react-dom/cjs/react-dom.development.js:29889
+[  434314ms] TypeError: __webpack_modules__[moduleId] is not a function
+    at __webpack_require__ (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\webpack-runtime.js:25:42)
+    at eval (webpack-internal:///(rsc)/./node_modules/next/dist/server/app-render/encryption-utils.js:40:35)
+    at <unknown> (rsc)/./node_modules/next/dist/server/app-render/encryption-utils.js (C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\vendor-chunks\next.js:1773:1)
+    at __webpack_require__ (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\webpack-runtime.js:25:42)
+    at eval (webpack-internal:///(rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader/index.js?name=app%2Ftraining%2Fpage&page=%2Ftraining%2Fpage&appPaths=%2Ftraining%2Fpage&pagePath=private-next-app-dir%2Ftraining%2Fpage.tsx&appDir=C%3A%5CUsers%5CUsuario%5CDocuments%5CProjects%5CretoPescanova%5Cfrontend%5Capp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=C%3A%5CUsers%5CUsuario%5CDocuments%5CProjects%5CretoPescanova%5Cfrontend&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=standalone&preferredRegion=&middlewareConfig=e30%3D&isGlobalNotFoundEnabled=!:28:103)
+    at <unknown> (rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader/index.js?name=app%2Ftraining%2Fpage&page=%2Ftraining%2Fpage&appPaths=%2Ftraining%2Fpage&pagePath=private-next-app-dir%2Ftraining%2Fpage.tsx&appDir=C%3A%5CUsers%5CUsuario%5CDocuments%5CProjects%5CretoPescanova%5Cfrontend%5Capp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=C%3A%5CUsers%5CUsuario%5CDocuments%5CProjects%5CretoPescanova%5Cfrontend&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=standalone&preferredRegion=&middlewareConfig=e30%3D&isGlobalNotFoundEnabled=! (C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\app\training\page.js:66:1)
+    at __webpack_require__ (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\webpack-runtime.js:25:42)
+    at __webpack_exec__ (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\app\training\page.js:433:39)
+    at <unknown> (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\app\training\page.js:434:268)
+    at __webpack_require__.X (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\webpack-runtime.js:155:21)
+    at <unknown> (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\app\training\page.js:434:47)
+    at Object.<anonymous> (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\.next\server\app\training\page.js:437:3)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14)
+    at Object..js (node:internal/modules/cjs/loader:1895:10)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/modules/cjs/loader:1282:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1487:12)
+    at mod.require (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\require-hook.js:68:28)
+    at require (node:internal/modules/helpers:135:16)
+    at requirePage (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\require.js:99:80)
+    at loadComponentsImpl (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\load-components.js:132:57)
+    at async DevServer.findPageComponentsImpl (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\next-server.js:900:36)
+    at async DevServer.findPageComponents (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\dev\next-dev-server.js:706:16)
+    at async DevServer.renderPageComponent (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\base-server.js:1468:24)
+    at async DevServer.renderToResponseImpl (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\base-server.js:1522:32)
+    at async DevServer.pipeImpl (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\base-server.js:1026:25)
+    at async NextNodeServer.handleCatchallRenderRequest (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\next-server.js:394:17)
+    at async DevServer.handleRequestImpl (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\base-server.js:917:17)
+    at async (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\dev\next-dev-server.js:400:20)
+    at async Span.traceAsyncFn (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\trace\trace.js:157:20)
+    at async DevServer.handleRequest (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\dev\next-dev-server.js:396:24)
+    at async invokeRender (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\lib\router-server.js:240:21)
+    at async handleRequest (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\lib\router-server.js:437:24)
+    at async requestHandlerImpl (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\lib\router-server.js:485:13)
+    at async Server.requestListener (file://C:\Users\Usuario\Documents\Projects\retoPescanova\frontend\node_modules\next\dist\server\lib\start-server.js:226:13)
+[  434312ms] [LOG] [HMR] connected @ webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/client/dev/hot-reloader/pages/websocket.js:45
+[  435078ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/_next/static/webpack/119d7b6dd4a66877.webpack.hot-update.json:0
+[  435079ms] [WARNING] [Fast Refresh] performing full reload because your application had an unrecoverable error @ webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/client/dev/hot-reloader/pages/hot-reloader-pages.js:347
+[  435400ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/training:0
