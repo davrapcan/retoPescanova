@@ -12,9 +12,23 @@ EXPECTED_USERS = 1_230
 
 def load_mdm_xlsx(path) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """Returns (mdm_events, mdm_devices, mdm_patches)."""
-    events = pd.read_excel(path, sheet_name=0)
-    devices = pd.read_excel(path, sheet_name=1)
-    patches = pd.read_excel(path, sheet_name=2)
+    xl = pd.ExcelFile(path)
+    if len(xl.sheet_names) < 3:
+        raise ValueError(
+            f"Schema mismatch: MDM_DATA.xlsx requires 3 sheets "
+            f"(Events, Devices, Patches), got {len(xl.sheet_names)}. "
+            f"Did you mean /api/v1/ingest/training?"
+        )
+    header = pd.read_excel(xl, sheet_name=0, nrows=0)
+    if "Patch ID" not in header.columns:
+        raise ValueError(
+            f"Schema mismatch: sheet 0 has columns {list(header.columns[:5])}…, "
+            f"expected MDM columns (Patch ID, Deployment Status…). "
+            f"Did you mean /api/v1/ingest/training?"
+        )
+    events = pd.read_excel(xl, sheet_name=0)
+    devices = pd.read_excel(xl, sheet_name=1)
+    patches = pd.read_excel(xl, sheet_name=2)
 
     # ── events ──────────────────────────────────────────────────────────────
     events = events.rename(columns={
@@ -75,8 +89,22 @@ def load_mdm_xlsx(path) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
 
 def load_training_xlsx(path) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Returns (training_events, training_users) — Removed rows filtered, orphan users excluded."""
-    events_raw = pd.read_excel(path, sheet_name=0)
-    users_raw = pd.read_excel(path, sheet_name=1)
+    xl = pd.ExcelFile(path)
+    if len(xl.sheet_names) < 2:
+        raise ValueError(
+            f"Schema mismatch: Formación_y_concienciación.xlsx requires 2 sheets "
+            f"(Events, Users), got {len(xl.sheet_names)}. "
+            f"Did you mean /api/v1/ingest/mdm?"
+        )
+    header = pd.read_excel(xl, sheet_name=0, nrows=0)
+    if "Module Name (User Display)" not in header.columns:
+        raise ValueError(
+            f"Schema mismatch: sheet 0 has columns {list(header.columns[:5])}…, "
+            f"expected training columns (Module Name, Module Status…). "
+            f"Did you mean /api/v1/ingest/mdm?"
+        )
+    events_raw = pd.read_excel(xl, sheet_name=0)
+    users_raw = pd.read_excel(xl, sheet_name=1)
 
     # ── events ──────────────────────────────────────────────────────────────
     events = events_raw.rename(columns={
