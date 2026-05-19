@@ -10,6 +10,7 @@ from app.models.responses import (
     TrainingKpis,
     TrainingOutlierItem,
     TrainingTimelineItem,
+    TrainingUserItem,
 )
 from app.services import training_service
 from app.storage.memory import store
@@ -80,6 +81,18 @@ async def get_training_outliers(
 ):
     _require_training()
     return {"data": training_service.get_outliers(limit, date_from, date_to, location)}
+
+
+@router.get("/users", response_model=ApiResponse[List[TrainingUserItem]])
+async def get_training_users(
+    sort: str = Query(default="worst", pattern="^(best|worst)$"),
+    limit: int = Query(default=50, ge=1, le=500),
+    date_from: Optional[str] = None,
+    date_to: Optional[str] = None,
+    location: Optional[str] = None,
+):
+    _require_training()
+    return {"data": training_service.get_users(sort, limit, date_from, date_to, location)}
 
 
 @router.get("/banner", response_model=ApiResponse[TrainingBanner])

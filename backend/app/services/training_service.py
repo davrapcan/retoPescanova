@@ -6,7 +6,7 @@ from app.config import LOW_SAMPLE_THRESHOLD, P95_DURATION_GLOBAL_MIN
 from app.models.responses import (
     TrainingBanner, TrainingCountryItem, TrainingDistributionItem,
     TrainingFriction, TrainingFrictionCell, TrainingKpis,
-    TrainingOutlierItem, TrainingTimelineItem,
+    TrainingOutlierItem, TrainingTimelineItem, TrainingUserItem,
 )
 from app.services.friction import compute_friction
 from app.storage.memory import store
@@ -217,6 +217,32 @@ def get_outliers(
             severity="critical" if row["score_pct"] < 20 else "warning",
         )
         for _, row in outliers.iterrows()
+    ]
+
+
+def get_users(
+    sort: str = "worst",
+    limit: int = 50,
+    date_from: Optional[str] = None,
+    date_to: Optional[str] = None,
+    location: Optional[str] = None,
+) -> list[TrainingUserItem]:
+    """Return users sorted by score_pct: 'best' = highest first, 'worst' = lowest first."""
+    df = _filter_users(date_from, date_to, location)
+    ascending = sort == "worst"
+    df = df.sort_values(["score_pct", "completion_rate"], ascending=[ascending, ascending]).head(limit)
+
+    return [
+        TrainingUserItem(
+            user_id=str(row["user_id"]),
+            location=str(row["location"]),
+            score_pct=round(float(row["score_pct"]), 2),
+            completion_rate=round(float(row["completion_rate"]), 4),
+            total_duration_min=int(row["total_duration_min"]),
+            modules_completed=int(row["modules_completed"]),
+            modules_assigned=int(row["modules_assigned"]),
+        )
+        for _, row in df.iterrows()
     ]
 
 
