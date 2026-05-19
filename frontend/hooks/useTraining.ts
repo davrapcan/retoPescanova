@@ -10,80 +10,57 @@ import type {
   TrainingOutlierItem,
   TrainingTimelineItem,
 } from '@/lib/types'
+import {
+  mockTrainingBanner,
+  mockTrainingByCountry,
+  mockTrainingDistribution,
+  mockTrainingFriction,
+  mockTrainingKpis,
+  mockTrainingOutliers,
+  mockTrainingTimeline,
+} from '@/lib/mocks/training'
 
-export function useTrainingKpis() {
-  const [data, setData] = useState<TrainingKpis | null>(null)
+const USE_MOCKS = process.env.NEXT_PUBLIC_USE_MOCKS === 'true'
+
+function useMockOrFetch<T>(mockValue: T, fetcher: () => Promise<{ data: T | null }>) {
+  const [data, setData] = useState<T | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    api.training.kpis()
+    if (USE_MOCKS) {
+      setData(mockValue)
+      setLoading(false)
+      return
+    }
+    fetcher()
       .then((r) => setData(r.data))
       .catch((e) => setError(String(e)))
       .finally(() => setLoading(false))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return { data, loading, error }
+}
+
+export function useTrainingKpis() {
+  return useMockOrFetch<TrainingKpis>(mockTrainingKpis, () => api.training.kpis())
 }
 
 export function useTrainingByCountry() {
-  const [data, setData] = useState<TrainingCountryItem[] | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    api.training.byCountry()
-      .then((r) => setData(r.data))
-      .catch((e) => setError(String(e)))
-      .finally(() => setLoading(false))
-  }, [])
-
-  return { data, loading, error }
+  return useMockOrFetch<TrainingCountryItem[]>(mockTrainingByCountry, () => api.training.byCountry())
 }
 
 export function useTrainingTimeline() {
-  const [data, setData] = useState<TrainingTimelineItem[] | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    api.training.timeline()
-      .then((r) => setData(r.data))
-      .catch((e) => setError(String(e)))
-      .finally(() => setLoading(false))
-  }, [])
-
-  return { data, loading, error }
+  return useMockOrFetch<TrainingTimelineItem[]>(mockTrainingTimeline, () => api.training.timeline())
 }
 
 export function useTrainingFriction() {
-  const [data, setData] = useState<TrainingFriction | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    api.training.friction()
-      .then((r) => setData(r.data))
-      .catch((e) => setError(String(e)))
-      .finally(() => setLoading(false))
-  }, [])
-
-  return { data, loading, error }
+  return useMockOrFetch<TrainingFriction>(mockTrainingFriction, () => api.training.friction())
 }
 
 export function useTrainingDistribution() {
-  const [data, setData] = useState<TrainingDistributionItem[] | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    api.training.distribution()
-      .then((r) => setData(r.data))
-      .catch((e) => setError(String(e)))
-      .finally(() => setLoading(false))
-  }, [])
-
-  return { data, loading, error }
+  return useMockOrFetch<TrainingDistributionItem[]>(mockTrainingDistribution, () => api.training.distribution())
 }
 
 export function useTrainingOutliers(limit = 4) {
@@ -92,6 +69,11 @@ export function useTrainingOutliers(limit = 4) {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    if (USE_MOCKS) {
+      setData(mockTrainingOutliers.slice(0, limit))
+      setLoading(false)
+      return
+    }
     api.training.outliers(limit)
       .then((r) => setData(r.data))
       .catch((e) => setError(String(e)))
@@ -102,16 +84,5 @@ export function useTrainingOutliers(limit = 4) {
 }
 
 export function useTrainingBanner() {
-  const [data, setData] = useState<TrainingBanner | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    api.training.banner()
-      .then((r) => setData(r.data))
-      .catch((e) => setError(String(e)))
-      .finally(() => setLoading(false))
-  }, [])
-
-  return { data, loading, error }
+  return useMockOrFetch<TrainingBanner>(mockTrainingBanner, () => api.training.banner())
 }
