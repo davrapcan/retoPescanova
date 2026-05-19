@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block kpis %}
+<div class="kpi-row">
+  <div class="kpi-card ok">
+    <div class="kpi-label">Completed</div>
+    <div class="kpi-value">{{ kpis.completed }}</div>
+    <div class="kpi-meta">{{ kpis.completed_pct }}% del parque</div>
+  </div>
+  <div class="kpi-card warning">
+    <div class="kpi-label">Missing</div>
+    <div class="kpi-value">{{ kpis.missing }}</div>
+    <div class="kpi-meta">{{ kpis.missing_pct }}% del parque</div>
+  </div>
+  <div class="kpi-card brand">
+    <div class="kpi-label">In Progress</div>
+    <div class="kpi-value">{{ kpis.in_progress }}</div>
+    <div class="kpi-meta">{{ kpis.in_progress_pct }}% del parque</div>
+  </div>
+  <div class="kpi-card critical">
+    <div class="kpi-label">Failed</div>
+    <div class="kpi-value">{{ kpis.failed }}</div>
+    <div class="kpi-meta">{{ kpis.failed_pct }}% del parque</div>
+  </div>
+</div>
+{% endblock %}
+
+{% block banner %}
+<div class="risk-banner {{ banner.severity }}">
+  <div class="title">{{ banner.title }}</div>
+  <div class="desc">{{ banner.description }}</div>
+</div>
+{% endblock %}
+
+{% block content %}
+<h2 class="section-title">Top parches por riesgo</h2>
+{% if top_patches %}
+<table class="report-table">
+  <thead>
+    <tr>
+      <th>Bulletin</th>
+      <th>Descripción</th>
+      <th class="num">Missing</th>
+      <th class="num">Failed</th>
+      <th class="num">Installed</th>
+      <th class="num">Risk score</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for p in top_patches %}
+    <tr>
+      <td>{{ p.bulletin_id }}</td>
+      <td>{{ p.description }}</td>
+      <td class="num">{{ p.missing_systems }}</td>
+      <td class="num">{{ p.failed_systems }}</td>
+      <td class="num">{{ p.installed_systems }}</td>
+      <td class="num">{{ p.risk_score }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="empty-state">Sin parches para los filtros aplicados</div>
+{% endif %}
+
+<h2 class="section-title">Estado por oficina</h2>
+{% if offices %}
+<table class="report-table">
+  <thead>
+    <tr>
+      <th>Oficina</th>
+      <th>Código</th>
+      <th class="num">Total</th>
+      <th class="num">Completed</th>
+      <th class="num">Missing</th>
+      <th class="num">In Progress</th>
+      <th class="num">Failed</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for o in offices %}
+    <tr>
+      <td>{{ o.office }}</td>
+      <td>{{ o.office_code }}</td>
+      <td class="num">{{ o.total }}</td>
+      <td class="num">{{ o.completed }}</td>
+      <td class="num">{{ o.missing }}</td>
+      <td class="num">{{ o.in_progress }}</td>
+      <td class="num">{{ o.failed }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="empty-state">Sin oficinas para los filtros aplicados</div>
+{% endif %}
+{% endblock %}
