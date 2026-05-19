@@ -154,17 +154,22 @@ export function useTrainingBanner(): HookResult<TrainingBanner> {
 
 export function useTrainingUsers(sort: 'best' | 'worst', limit = 50, enabled = true) {
   const [data, setData] = useState<TrainingUserItem[] | null>(null)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!enabled) return
+    if (!enabled) {
+      setLoading(false)
+      return
+    }
+    let cancelled = false
     setLoading(true)
     setError(null)
     api.training.users(sort, limit)
-      .then((r) => setData(r.data))
-      .catch((e) => setError(String(e)))
-      .finally(() => setLoading(false))
+      .then((r) => { if (!cancelled) setData(r.data) })
+      .catch((e) => { if (!cancelled) setError(String(e)) })
+      .finally(() => { if (!cancelled) setLoading(false) })
+    return () => { cancelled = true }
   }, [sort, limit, enabled])
 
   return { data, loading, error }

@@ -62,7 +62,7 @@ function Skeleton() {
 
 export function UserRankingPanel() {
   const [sort, setSort] = useState<'best' | 'worst'>('worst')
-  const { data, loading } = useTrainingUsers(sort, 5, true)
+  const { data, loading, error } = useTrainingUsers(sort, 5, true)
 
   const title = sort === 'worst'
     ? '¿Quién necesita más apoyo?'
@@ -79,6 +79,10 @@ export function UserRankingPanel() {
       <div className="h-full overflow-y-auto">
         {loading ? (
           <Skeleton />
+        ) : error ? (
+          <p style={{ fontSize: '11px', color: 'var(--critical)', padding: '16px', textAlign: 'center' }}>
+            Error cargando usuarios: {error}
+          </p>
         ) : data?.length ? (
           <div className="flex flex-col gap-1.5">
             <p style={{ fontSize: '10px', color: 'var(--text-tertiary)', lineHeight: 1.4, marginBottom: '2px' }}>
