@@ -40,9 +40,7 @@ body {
 .cover { margin-bottom: 12pt; }
 .cover-row { display: flex; align-items: center; gap: 10pt; }
 .logo {
-  width: 26pt; height: 26pt; border-radius: 4pt; background: var(--brand-red);
-  color: #fff; font-weight: 700; font-size: 14pt;
-  display: flex; align-items: center; justify-content: center;
+  width: 64pt; height: auto; display: block; object-fit: contain;
 }
 .cover-eyebrow { font-size: 8pt; letter-spacing: 0.5pt; text-transform: uppercase; color: var(--text-secondary); }
 .cover-title { font-size: 20pt; font-weight: 600; margin: 2pt 0 0 0; }

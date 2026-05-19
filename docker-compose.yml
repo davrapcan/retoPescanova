@@ -11,6 +11,7 @@ services:
     environment:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
+      - DATA_DIR=/app/data/uploads
     restart: unless-stopped
 
   frontend:
