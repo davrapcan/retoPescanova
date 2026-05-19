@@ -6,6 +6,7 @@ import { KPICard } from '@/components/ui/KPICard'
 import { RiskBanner } from '@/components/ui/RiskBanner'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { LegendDots } from '@/components/ui/LegendDots'
+import { ReportButton } from '@/components/ui/ReportButton'
 import {
   useMDMBanner,
   useMDMByOffice,
@@ -34,10 +35,10 @@ function Skeleton({ className = '' }: { className?: string }) {
 }
 
 const MDM_LEGEND = [
-  { color: chartPalette.mdm.completed,  label: 'Completed' },
-  { color: chartPalette.mdm.missing,    label: 'Missing' },
-  { color: chartPalette.mdm.inProgress, label: 'In Progress' },
-  { color: chartPalette.mdm.failed,     label: 'Failed' },
+  { color: chartPalette.mdm.completed,  label: 'Actualizado' },
+  { color: chartPalette.mdm.missing,    label: 'Sin actualizar' },
+  { color: chartPalette.mdm.inProgress, label: 'En curso' },
+  { color: chartPalette.mdm.failed,     label: 'Error' },
 ]
 
 export default function MDMPage() {
@@ -65,16 +66,19 @@ export default function MDMPage() {
       }}
     >
       {/* ── Risk Banner ──────────────────────────────────────────── */}
-      <div>
-        {banner.loading ? (
-          <Skeleton className="h-10" />
-        ) : banner.data ? (
-          <RiskBanner
-            severity={banner.data.severity}
-            title={banner.data.title}
-            description={banner.data.description}
-          />
-        ) : null}
+      <div className="flex items-start gap-2">
+        <div className="flex-1">
+          {banner.loading ? (
+            <Skeleton className="h-10" />
+          ) : banner.data ? (
+            <RiskBanner
+              severity={banner.data.severity}
+              title={banner.data.title}
+              description={banner.data.description}
+            />
+          ) : null}
+        </div>
+        <ReportButton kind="mdm" />
       </div>
 
       {/* ── KPI Row ──────────────────────────────────────────────── */}
@@ -86,32 +90,32 @@ export default function MDMPage() {
         ) : kpis.data ? (
           <div className="grid grid-cols-4 gap-1.5">
             <KPICard
-              label="Patching Completed"
+              label="Equipos actualizados"
               value={kpis.data.completed}
-              subtitle={`${kpis.data.completed_pct.toFixed(1)}% del parque`}
+              subtitle={`${kpis.data.completed_pct.toFixed(1)}% del total`}
               severity="ok"
               active={status === 'completed'}
               onClick={() => toggleStatus('completed' as StatusKey)}
             />
             <KPICard
-              label="Patches Missing"
+              label="Sin actualizar"
               value={kpis.data.missing}
-              subtitle={`${kpis.data.missing_pct.toFixed(1)}% del parque`}
+              subtitle={`${kpis.data.missing_pct.toFixed(1)}% del total`}
               severity="warning"
               active={status === 'missing'}
               onClick={() => toggleStatus('missing' as StatusKey)}
             />
             <KPICard
-              label="Patching In Progress"
+              label="Actualización en curso"
               value={kpis.data.in_progress}
-              subtitle={`${kpis.data.in_progress_pct.toFixed(1)}% del parque`}
+              subtitle={`${kpis.data.in_progress_pct.toFixed(1)}% del total`}
               active={status === 'in_progress'}
               onClick={() => toggleStatus('in_progress' as StatusKey)}
             />
             <KPICard
-              label="Patching Failed"
+              label="Actualización fallida"
               value={kpis.data.failed}
-              subtitle={`${kpis.data.failed_pct.toFixed(1)}% del parque`}
+              subtitle={`${kpis.data.failed_pct.toFixed(1)}% del total`}
               severity="critical"
               active={status === 'failed'}
               onClick={() => toggleStatus('failed' as StatusKey)}
