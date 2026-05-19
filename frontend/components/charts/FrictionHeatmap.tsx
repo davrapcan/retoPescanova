@@ -20,11 +20,17 @@ export function FrictionHeatmap({ data }: FrictionHeatmapProps) {
 
   const { cells, modules, countries } = data
 
+  // Map full country name → ISO for axis labels
+  const isoLabels = countries.map((c) => {
+    const match = cells.find((cell) => cell.location === c)
+    return match ? match.location_iso : c.slice(0, 2).toUpperCase()
+  })
+
   // Build echarts data array: [x_idx, y_idx, value, opacity_value, cell_data]
   const chartData = cells
     .filter((c) => c.friction_score !== null)
     .map((c) => {
-      const xIdx = countries.indexOf(c.location_iso)
+      const xIdx = countries.indexOf(c.location)
       const yIdx = modules.indexOf(c.module_name)
       if (xIdx === -1 || yIdx === -1) return null
       const opacity = c.low_sample ? 0.4 : Math.max(0.4, Math.min(1, c.user_count / 70))
@@ -53,7 +59,7 @@ export function FrictionHeatmap({ data }: FrictionHeatmapProps) {
     },
     xAxis: {
       type: 'category',
-      data: countries,
+      data: isoLabels,
       splitArea: { show: false },
       axisLine: { show: false },
       axisTick: { show: false },
