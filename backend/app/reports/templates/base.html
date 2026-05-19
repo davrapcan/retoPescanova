@@ -31,5 +31,7 @@
     <section class="banner">{% block banner %}{% endblock %}</section>
     <section class="content">{% block content %}{% endblock %}</section>
   </main>
+  <div class="meta-emitted">{{ emitted_at_human }}</div>
+  <div class="meta-filters">{{ filters_summary }}</div>
 </body>
 </html>
