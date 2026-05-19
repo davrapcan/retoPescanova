@@ -13,12 +13,20 @@ _STATUS_INPROGRESS = "Patching Inprogress"
 _STATUS_FAILED = "Patching Failed"
 
 
-def _filter_devices(date_from: Optional[str], date_to: Optional[str]) -> pd.DataFrame:
+def _filter_devices(
+    date_from: Optional[str],
+    date_to: Optional[str],
+    office: Optional[str] = None,
+) -> pd.DataFrame:
     df = store.mdm_devices.copy()
     if date_from:
         df = df[df["last_deployment_at"] >= pd.Timestamp(date_from)]
     if date_to:
         df = df[df["last_deployment_at"] <= pd.Timestamp(date_to)]
+    if office:
+        codes = [o.strip() for o in office.split(",") if o.strip()]
+        if codes:
+            df = df[df["remote_office_code"].isin(codes)]
     return df
 
 
@@ -31,8 +39,12 @@ def _filter_events(date_from: Optional[str], date_to: Optional[str]) -> pd.DataF
     return df
 
 
-def get_kpis(date_from: Optional[str] = None, date_to: Optional[str] = None) -> MDMKpis:
-    df = _filter_devices(date_from, date_to)
+def get_kpis(
+    date_from: Optional[str] = None,
+    date_to: Optional[str] = None,
+    office: Optional[str] = None,
+) -> MDMKpis:
+    df = _filter_devices(date_from, date_to, office)
     total = len(df)
     counts = df["patching_status"].value_counts()
     completed = int(counts.get(_STATUS_COMPLETED, 0))
@@ -57,10 +69,7 @@ def get_by_office(
     date_to: Optional[str] = None,
     office: Optional[str] = None,
 ) -> list[MDMOfficeItem]:
-    df = _filter_devices(date_from, date_to)
-    if office:
-        offices = [o.strip() for o in office.split(",")]
-        df = df[df["remote_office_raw"].isin(offices)]
+    df = _filter_devices(date_from, date_to, office)
 
     result = []
     for (off_name, off_code), grp in df.groupby(
@@ -80,8 +89,15 @@ def get_by_office(
     return result
 
 
-def get_top_patches(limit: int = 5) -> list[MDMPatchItem]:
+def get_top_patches(
+    limit: int = 5,
+    patch_id: Optional[str] = None,
+) -> list[MDMPatchItem]:
     df = store.mdm_patches.copy()
+    if patch_id:
+        ids = [int(p.strip()) for p in patch_id.split(",") if p.strip()]
+        if ids:
+            df = df[df["patch_id"].isin(ids)]
     total_devices = len(store.mdm_devices)
     df = df.sort_values("risk_score", ascending=False).head(limit)
     return [
