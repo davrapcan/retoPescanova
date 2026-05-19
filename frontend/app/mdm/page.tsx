@@ -34,10 +34,10 @@ function Skeleton({ className = '' }: { className?: string }) {
 }
 
 const MDM_LEGEND = [
-  { color: chartPalette.mdm.completed,  label: 'Completed' },
-  { color: chartPalette.mdm.missing,    label: 'Missing' },
-  { color: chartPalette.mdm.inProgress, label: 'In Progress' },
-  { color: chartPalette.mdm.failed,     label: 'Failed' },
+  { color: chartPalette.mdm.completed,  label: 'Actualizado' },
+  { color: chartPalette.mdm.missing,    label: 'Sin actualizar' },
+  { color: chartPalette.mdm.inProgress, label: 'En curso' },
+  { color: chartPalette.mdm.failed,     label: 'Error' },
 ]
 
 export default function MDMPage() {
@@ -157,7 +157,7 @@ export default function MDMPage() {
             <StackedHorizontalBar
               data={filteredByOffice}
               activeOffice={office}
-              onSelect={(o) => setOffice(office === o.office ? undefined : o.office)}
+              onSelect={(o) => setOffice(office === o.office_code ? undefined : o.office_code)}
             />
           ) : (
             <EmptyState

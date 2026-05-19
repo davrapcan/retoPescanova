@@ -1,0 +1,100 @@
+@page {
+  size: A4;
+  margin: 18mm 16mm 22mm 16mm;
+
+  @bottom-left {
+    content: "Emitido " string(emitted) " · Filtros: " string(filters);
+    font-family: 'Inter', 'DejaVu Sans', sans-serif;
+    font-size: 8pt;
+    color: #64748B;
+  }
+  @bottom-right {
+    content: "Página " counter(page) " / " counter(pages);
+    font-family: 'Inter', 'DejaVu Sans', sans-serif;
+    font-size: 8pt;
+    color: #64748B;
+  }
+}
+
+:root {
+  --brand-red: #E30613;
+  --brand-blue: #005A9C;
+  --ok: #16A34A;
+  --warning: #F59E0B;
+  --critical: #DC2626;
+  --text-primary: #0F172A;
+  --text-secondary: #64748B;
+  --border: #E2E8F0;
+}
+
+body {
+  font-family: 'Inter', 'DejaVu Sans', sans-serif;
+  color: var(--text-primary);
+  font-size: 10pt;
+  margin: 0;
+}
+
+.meta-emitted { string-set: emitted content(); display: none; }
+.meta-filters { string-set: filters content(); display: none; }
+
+.cover { margin-bottom: 12pt; }
+.cover-row { display: flex; align-items: center; gap: 10pt; }
+.logo {
+  width: 26pt; height: 26pt; border-radius: 4pt; background: var(--brand-red);
+  color: #fff; font-weight: 700; font-size: 14pt;
+  display: flex; align-items: center; justify-content: center;
+}
+.cover-eyebrow { font-size: 8pt; letter-spacing: 0.5pt; text-transform: uppercase; color: var(--text-secondary); }
+.cover-title { font-size: 20pt; font-weight: 600; margin: 2pt 0 0 0; }
+.cover-subtitle { font-size: 10pt; color: var(--text-secondary); margin-top: 2pt; }
+
+.chips { margin-top: 8pt; display: flex; flex-wrap: wrap; gap: 4pt; }
+.chip { font-size: 8pt; border: 0.5pt solid var(--border); border-radius: 999pt;
+        padding: 1pt 7pt; color: var(--text-primary); }
+.chip-label { color: var(--text-secondary); margin-right: 4pt; text-transform: uppercase; letter-spacing: 0.3pt; }
+
+.kpis { margin: 8pt 0 12pt 0; }
+.kpi-row { display: flex; gap: 6pt; }
+.kpi-card { flex: 1; border: 0.5pt solid var(--border); border-radius: 6pt;
+            padding: 8pt 10pt; border-top-width: 2pt; }
+.kpi-card.ok        { border-top-color: var(--ok); }
+.kpi-card.warning   { border-top-color: var(--warning); }
+.kpi-card.critical  { border-top-color: var(--critical); }
+.kpi-card.brand     { border-top-color: var(--brand-blue); }
+.kpi-label { font-size: 8pt; letter-spacing: 0.4pt; text-transform: uppercase; color: var(--text-secondary); }
+.kpi-value { font-size: 18pt; font-weight: 600; margin-top: 2pt; }
+.kpi-meta  { font-size: 8pt; color: var(--text-secondary); margin-top: 2pt; }
+
+.risk-banner {
+  border-radius: 6pt; padding: 8pt 10pt; margin-bottom: 12pt;
+  border-left: 3pt solid; font-size: 10pt;
+}
+.risk-banner.ok        { background: #F0FDF4; border-color: var(--ok); }
+.risk-banner.warning   { background: #FFFBEB; border-color: var(--warning); }
+.risk-banner.critical  { background: #FEF2F2; border-color: var(--critical); }
+.risk-banner .title { font-weight: 600; }
+.risk-banner .desc  { color: var(--text-secondary); margin-top: 2pt; }
+
+h2.section-title { font-size: 11pt; font-weight: 600; text-transform: uppercase;
+                   letter-spacing: 0.4pt; color: var(--text-secondary);
+                   margin: 14pt 0 6pt 0; }
+
+table.report-table { width: 100%; border-collapse: collapse; font-size: 9pt; }
+table.report-table th {
+  text-align: left; font-weight: 600; color: var(--text-secondary);
+  border-bottom: 0.5pt solid var(--border); padding: 5pt 6pt;
+  font-size: 8pt; letter-spacing: 0.3pt; text-transform: uppercase;
+}
+table.report-table td {
+  padding: 5pt 6pt; border-bottom: 0.5pt solid var(--border);
+}
+table.report-table tr:nth-child(even) td { background: #F8FAFC; }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+.warn-pill {
+  display: inline-block; font-size: 7pt; padding: 1pt 4pt; border-radius: 3pt;
+  background: #FEF2F2; color: var(--critical); margin-left: 4pt;
+}
+.empty-state {
+  border: 0.5pt dashed var(--border); border-radius: 6pt; padding: 14pt;
+  text-align: center; color: var(--text-secondary); font-size: 9pt;
+}

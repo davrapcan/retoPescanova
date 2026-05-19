@@ -14,7 +14,10 @@ from app.transforms.normalize import country_to_iso
 
 
 def _filter_events(
-    date_from: Optional[str], date_to: Optional[str], location: Optional[str]
+    date_from: Optional[str],
+    date_to: Optional[str],
+    location: Optional[str],
+    module: Optional[str] = None,
 ) -> pd.DataFrame:
     df = store.training_events.copy()
     if date_from:
@@ -22,13 +25,21 @@ def _filter_events(
     if date_to:
         df = df[df["started_at"] <= pd.Timestamp(date_to)]
     if location:
-        locs = [l.strip() for l in location.split(",")]
-        df = df[df["location"].isin(locs)]
+        locs = [l.strip() for l in location.split(",") if l.strip()]
+        if locs:
+            df = df[df["location"].isin(locs)]
+    if module:
+        mods = [m.strip() for m in module.split(",") if m.strip()]
+        if mods:
+            df = df[df["assignment_name"].isin(mods)]
     return df
 
 
 def _filter_users(
-    date_from: Optional[str], date_to: Optional[str], location: Optional[str]
+    date_from: Optional[str],
+    date_to: Optional[str],
+    location: Optional[str],
+    module: Optional[str] = None,
 ) -> pd.DataFrame:
     df = store.training_users.copy()
     if date_from:
@@ -36,8 +47,16 @@ def _filter_users(
     if date_to:
         df = df[df["last_completion_at"] <= pd.Timestamp(date_to)]
     if location:
-        locs = [l.strip() for l in location.split(",")]
-        df = df[df["location"].isin(locs)]
+        locs = [l.strip() for l in location.split(",") if l.strip()]
+        if locs:
+            df = df[df["location"].isin(locs)]
+    if module:
+        mods = [m.strip() for m in module.split(",") if m.strip()]
+        if mods:
+            event_users = store.training_events[
+                store.training_events["assignment_name"].isin(mods)
+            ]["user_id"].unique()
+            df = df[df["user_id"].isin(event_users)]
     return df
 
 
@@ -45,13 +64,14 @@ def get_kpis(
     date_from: Optional[str] = None,
     date_to: Optional[str] = None,
     location: Optional[str] = None,
+    module: Optional[str] = None,
 ) -> TrainingKpis:
-    users = _filter_users(date_from, date_to, location)
-    events = _filter_events(date_from, date_to, location)
+    users = _filter_users(date_from, date_to, location, module)
+    events = _filter_events(date_from, date_to, location, module)
 
     total_users = len(users)
     total_countries = users[users["location"] != "Sin asignar"]["location"].nunique()
-    total_modules = events["module_name"].nunique()
+    total_modules = events["assignment_name"].nunique()
     completion_rate = float(users["completion_rate"].mean()) if total_users else 0.0
     avg_score_pct = float(users["score_pct"].mean()) if total_users else 0.0
     avg_duration_min = float(users["total_duration_min"].mean()) if total_users else 0.0
@@ -71,8 +91,9 @@ def get_kpis(
 def get_by_country(
     date_from: Optional[str] = None,
     date_to: Optional[str] = None,
+    module: Optional[str] = None,
 ) -> list[TrainingCountryItem]:
-    users = _filter_users(date_from, date_to, None)
+    users = _filter_users(date_from, date_to, None, module)
     users = users[users["location"] != "Sin asignar"]
 
     result = []
@@ -95,8 +116,9 @@ def get_timeline(
     date_from: Optional[str] = None,
     date_to: Optional[str] = None,
     location: Optional[str] = None,
+    module: Optional[str] = None,
 ) -> list[TrainingTimelineItem]:
-    users = _filter_users(date_from, date_to, location)
+    users = _filter_users(date_from, date_to, location, module)
     users = users[users["last_completion_at"].notna()].copy()
     users["month"] = users["last_completion_at"].dt.to_period("M").astype(str)
 
@@ -116,8 +138,9 @@ def get_friction(
     date_from: Optional[str] = None,
     date_to: Optional[str] = None,
     location: Optional[str] = None,
+    module: Optional[str] = None,
 ) -> TrainingFriction:
-    events = _filter_events(date_from, date_to, location)
+    events = _filter_events(date_from, date_to, location, module)
     events = events[events["location"] != "Sin asignar"]
 
     p95 = float(store.training_events["duration_min"].quantile(0.95))
@@ -177,8 +200,9 @@ def get_distribution(
     date_from: Optional[str] = None,
     date_to: Optional[str] = None,
     location: Optional[str] = None,
+    module: Optional[str] = None,
 ) -> list[TrainingDistributionItem]:
-    users = _filter_users(date_from, date_to, location)
+    users = _filter_users(date_from, date_to, location, module)
     bins = list(range(0, 110, 10))
     result = []
     for i in range(len(bins) - 1):
@@ -201,8 +225,9 @@ def get_outliers(
     date_from: Optional[str] = None,
     date_to: Optional[str] = None,
     location: Optional[str] = None,
+    module: Optional[str] = None,
 ) -> list[TrainingOutlierItem]:
-    users = _filter_users(date_from, date_to, location)
+    users = _filter_users(date_from, date_to, location, module)
     p90 = float(users["total_duration_min"].quantile(0.90))
     outliers = users[
         (users["total_duration_min"] > p90) & (users["score_pct"] < 30)
@@ -226,9 +251,10 @@ def get_users(
     date_from: Optional[str] = None,
     date_to: Optional[str] = None,
     location: Optional[str] = None,
+    module: Optional[str] = None,
 ) -> list[TrainingUserItem]:
     """Return users sorted by score_pct: 'best' = highest first, 'worst' = lowest first."""
-    df = _filter_users(date_from, date_to, location)
+    df = _filter_users(date_from, date_to, location, module)
     ascending = sort == "worst"
     df = df.sort_values(["score_pct", "completion_rate"], ascending=[ascending, ascending]).head(limit)
 
@@ -299,3 +325,10 @@ def get_banner() -> TrainingBanner:
         top_friction_module=top_module,
         global_completion_rate=round(global_completion, 4),
     )
+
+
+def list_modules() -> list[str]:
+    """Return the unique assignment names available in the training_events store."""
+    if store.training_events is None or store.training_events.empty:
+        return []
+    return sorted(store.training_events["assignment_name"].dropna().unique().tolist())

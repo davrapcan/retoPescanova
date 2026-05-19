@@ -99,3 +99,9 @@ async def get_training_users(
 async def get_training_banner():
     _require_training()
     return {"data": training_service.get_banner()}
+
+
+@router.get("/modules", response_model=ApiResponse[List[str]])
+async def get_training_modules():
+    _require_training()
+    return {"data": training_service.list_modules()}

@@ -13,12 +13,20 @@ _STATUS_INPROGRESS = "Patching Inprogress"
 _STATUS_FAILED = "Patching Failed"
 
 
-def _filter_devices(date_from: Optional[str], date_to: Optional[str]) -> pd.DataFrame:
+def _filter_devices(
+    date_from: Optional[str],
+    date_to: Optional[str],
+    office: Optional[str] = None,
+) -> pd.DataFrame:
     df = store.mdm_devices.copy()
     if date_from:
         df = df[df["last_deployment_at"] >= pd.Timestamp(date_from)]
     if date_to:
         df = df[df["last_deployment_at"] <= pd.Timestamp(date_to)]
+    if office:
+        codes = [o.strip() for o in office.split(",") if o.strip()]
+        if codes:
+            df = df[df["remote_office_code"].isin(codes)]
     return df
 
 
@@ -31,8 +39,12 @@ def _filter_events(date_from: Optional[str], date_to: Optional[str]) -> pd.DataF
     return df
 
 
-def get_kpis(date_from: Optional[str] = None, date_to: Optional[str] = None) -> MDMKpis:
-    df = _filter_devices(date_from, date_to)
+def get_kpis(
+    date_from: Optional[str] = None,
+    date_to: Optional[str] = None,
+    office: Optional[str] = None,
+) -> MDMKpis:
+    df = _filter_devices(date_from, date_to, office)
     total = len(df)
     counts = df["patching_status"].value_counts()
     completed = int(counts.get(_STATUS_COMPLETED, 0))
@@ -57,10 +69,7 @@ def get_by_office(
     date_to: Optional[str] = None,
     office: Optional[str] = None,
 ) -> list[MDMOfficeItem]:
-    df = _filter_devices(date_from, date_to)
-    if office:
-        offices = [o.strip() for o in office.split(",")]
-        df = df[df["remote_office_raw"].isin(offices)]
+    df = _filter_devices(date_from, date_to, office)
 
     result = []
     for (off_name, off_code), grp in df.groupby(
@@ -85,12 +94,22 @@ _FAILED_STATUSES = {"Failed", "Patching Failed"}
 _INSTALLED_STATUSES = {"Installed", "Patching Completed"}
 
 
-def get_top_patches(limit: int = 5, office: Optional[str] = None) -> list[MDMPatchItem]:
+def get_top_patches(
+    limit: int = 5,
+    office: Optional[str] = None,
+    patch_id: Optional[str] = None,
+) -> list[MDMPatchItem]:
     patches = store.mdm_patches
     devices = store.mdm_devices
 
+    patch_ids: list[int] = []
+    if patch_id:
+        patch_ids = [int(p.strip()) for p in patch_id.split(",") if p.strip()]
+
     if not office:
         df = patches.copy()
+        if patch_ids:
+            df = df[df["patch_id"].isin(patch_ids)]
         total_devices = len(devices)
         df = df.sort_values("risk_score", ascending=False).head(limit)
         return [
@@ -118,6 +137,8 @@ def get_top_patches(limit: int = 5, office: Optional[str] = None) -> list[MDMPat
     computer_names = set(office_devices["computer_name"])
     events = store.mdm_events
     office_events = events[events["computer_name"].isin(computer_names)].copy()
+    if patch_ids:
+        office_events = office_events[office_events["patch_id"].isin(patch_ids)]
     if office_events.empty:
         return []
 
@@ -142,15 +163,15 @@ def get_top_patches(limit: int = 5, office: Optional[str] = None) -> list[MDMPat
 
     patch_meta = patches.set_index("patch_id")
     items: list[MDMPatchItem] = []
-    for patch_id, row in counts.iterrows():
-        meta = patch_meta.loc[patch_id] if patch_id in patch_meta.index else None
+    for pid, row in counts.iterrows():
+        meta = patch_meta.loc[pid] if pid in patch_meta.index else None
         items.append(
             MDMPatchItem(
-                patch_id=int(patch_id),
+                patch_id=int(pid),
                 bulletin_id=str(meta["bulletin_id"]) if meta is not None else "",
                 description=str(meta["description"])
                 if meta is not None
-                else str(office_events[office_events["patch_id"] == patch_id]["patch_description"].iloc[0]),
+                else str(office_events[office_events["patch_id"] == pid]["patch_description"].iloc[0]),
                 missing_systems=int(row["missing"]),
                 installed_systems=int(row["installed"]),
                 failed_systems=int(row["failed"]),

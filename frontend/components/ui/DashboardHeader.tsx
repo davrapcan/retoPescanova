@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation'
 import { TimeRangePicker } from './TimeRangePicker'
 import { RefreshPicker } from './RefreshPicker'
 import { ActiveFilters } from './ActiveFilters'
+import { ReportButton } from './ReportButton'
 
 const TABS = [
   { href: '/mdm', label: 'MDM · Parches' },
@@ -14,6 +15,11 @@ const TABS = [
 export function DashboardHeader() {
   const pathname = usePathname()
   const showControls = pathname.startsWith('/mdm') || pathname.startsWith('/training')
+  const reportKind: 'mdm' | 'training' | null = pathname.startsWith('/mdm')
+    ? 'mdm'
+    : pathname.startsWith('/training')
+      ? 'training'
+      : null
 
   return (
     <header
@@ -64,6 +70,7 @@ export function DashboardHeader() {
           <div className="flex items-center gap-2 shrink-0">
             <TimeRangePicker />
             <RefreshPicker />
+            {reportKind && <ReportButton kind={reportKind} />}
           </div>
         </>
       )}

@@ -19,9 +19,10 @@ def _require_mdm():
 async def get_mdm_kpis(
     date_from: Optional[str] = None,
     date_to: Optional[str] = None,
+    office: Optional[str] = None,
 ):
     _require_mdm()
-    return {"data": mdm_service.get_kpis(date_from, date_to)}
+    return {"data": mdm_service.get_kpis(date_from, date_to, office)}
 
 
 @router.get("/by-office", response_model=ApiResponse[List[MDMOfficeItem]])
@@ -38,9 +39,10 @@ async def get_mdm_by_office(
 async def get_mdm_top_patches(
     limit: int = Query(default=5, ge=1, le=50),
     office: Optional[str] = None,
+    patch_id: Optional[str] = None,
 ):
     _require_mdm()
-    return {"data": mdm_service.get_top_patches(limit, office)}
+    return {"data": mdm_service.get_top_patches(limit, office, patch_id)}
 
 
 @router.get("/timeline", response_model=ApiResponse[List[MDMTimelineItem]])

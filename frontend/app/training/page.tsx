@@ -8,7 +8,7 @@ import { CountryDoubleBar } from '@/components/charts/CountryDoubleBar'
 import { TripleSparkline } from '@/components/charts/TripleSparkline'
 import { FrictionHeatmap } from '@/components/charts/FrictionHeatmap'
 import { ScoreHistogram } from '@/components/charts/ScoreHistogram'
-import { OutliersList } from '@/components/charts/OutliersList'
+import { UserRankingPanel } from '@/components/charts/UserRankingPanel'
 import { CountriesDetailModal } from '@/components/modals/CountriesDetailModal'
 import { UsersDetailModal } from '@/components/modals/UsersDetailModal'
 import {
@@ -18,7 +18,7 @@ import {
   useTrainingTimeline,
   useTrainingFriction,
   useTrainingDistribution,
-  useTrainingOutliers,
+
 } from '@/hooks/useTraining'
 import { useDashboardFilters } from '@/lib/filters'
 import type { Severity } from '@/lib/theme'
@@ -41,7 +41,6 @@ export default function TrainingPage() {
   const timeline     = useTrainingTimeline()
   const friction     = useTrainingFriction()
   const distribution = useTrainingDistribution()
-  const outliers     = useTrainingOutliers(4)
 
   const [countriesModalOpen, setCountriesModalOpen] = useState(false)
   const [usersModalOpen, setUsersModalOpen] = useState(false)
@@ -102,9 +101,9 @@ export default function TrainingPage() {
               severity={completionSeverity()}
             />
             <KPICard
-              label="Score medio"
+              label="Nota media del examen"
               value={`${kd.avg_score_pct.toFixed(1)}%`}
-              subtitle="obj. 80%"
+              subtitle="objetivo mínimo: 80%"
               severity={scoreSeverity()}
             />
             <KPICard
@@ -199,7 +198,7 @@ export default function TrainingPage() {
         style={{ gap: '6px', gridTemplateRows: 'minmax(0, 1fr)' }}
       >
         <Card
-          title="¿Cómo se distribuye el score?"
+          title="¿Cómo son las notas del examen?"
           className="h-full"
           inspectData={distribution.data}
           lastUpdated={distribution.lastUpdated}
@@ -214,25 +213,7 @@ export default function TrainingPage() {
           )}
         </Card>
 
-        <Card
-          title="¿Quién invierte más tiempo con peor resultado?"
-          className="h-full"
-          inspectData={outliers.data}
-          lastUpdated={outliers.lastUpdated}
-          panelId="training-outliers"
-        >
-          <div className="h-full overflow-y-auto">
-            {outliers.loading ? (
-              <div className="flex flex-col gap-1.5">
-                {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} h="h-10" />)}
-              </div>
-            ) : outliers.data?.length ? (
-              <OutliersList data={outliers.data} />
-            ) : (
-              <EmptyState />
-            )}
-          </div>
-        </Card>
+        <UserRankingPanel />
       </div>
     </div>
   )

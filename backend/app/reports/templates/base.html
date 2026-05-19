@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>{{ title }}</title>
+  <style>{{ stylesheet | safe }}</style>
+</head>
+<body>
+  <main>
+    <section class="cover">
+      {% block cover %}
+      <div class="cover-row">
+        <div class="logo">P</div>
+        <div class="cover-text">
+          <div class="cover-eyebrow">Pescanova · Cyber Risk Cockpit</div>
+          <h1 class="cover-title">{{ title }}</h1>
+          {% if subtitle %}<div class="cover-subtitle">{{ subtitle }}</div>{% endif %}
+        </div>
+      </div>
+      {% if filter_chips %}
+      <div class="chips">
+        {% for chip in filter_chips %}
+        <span class="chip"><span class="chip-label">{{ chip.label }}</span><span class="chip-value">{{ chip.value }}</span></span>
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% endblock %}
+    </section>
+
+    <section class="kpis">{% block kpis %}{% endblock %}</section>
+    <section class="banner">{% block banner %}{% endblock %}</section>
+    <section class="content">{% block content %}{% endblock %}</section>
+  </main>
+  <div class="meta-emitted">{{ emitted_at_human }}</div>
+  <div class="meta-filters">{{ filters_summary }}</div>
+</body>
+</html>

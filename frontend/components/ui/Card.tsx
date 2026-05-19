@@ -198,7 +198,7 @@ export function Card({
             {title && (
               <p
                 className="uppercase font-medium"
-                style={{ fontSize: '10px', color: 'var(--text-secondary)', letterSpacing: '0.5px' }}
+                style={{ fontSize: '12px', color: 'var(--text-secondary)', letterSpacing: '0.5px' }}
               >
                 {title}
               </p>
@@ -256,7 +256,7 @@ export function Card({
                               className="text-left px-3 py-1.5 text-xs hover:bg-slate-50"
                               style={{ color: 'var(--text-primary)' }}
                             >
-                              Inspect data
+                              Ver datos
                             </button>
                             <button
                               type="button"
@@ -291,7 +291,7 @@ export function Card({
                           className="text-left px-3 py-1.5 text-xs hover:bg-slate-50"
                           style={{ color: 'var(--text-primary)' }}
                         >
-                          {copied ? '✓ Copiado' : 'Copy link to panel'}
+                          {copied ? '✓ Copiado' : 'Copiar enlace del panel'}
                         </button>
                         {expandable && (
                           <button

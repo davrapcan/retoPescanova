@@ -124,7 +124,7 @@ export function TripleSparkline({ data }: TripleSparklineProps) {
       <Sparkline
         values={data.map((d) => d.avg_score_pct)}
         color="var(--warning)"
-        label="Score medio"
+        label="Nota media"
         formatValue={(v) => `${Math.abs(Math.round(v))}%`}
       />
       <Sparkline

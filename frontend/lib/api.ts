@@ -24,6 +24,16 @@ import type {
 
 const BASE_URL = 'http://localhost:8000/api/v1'
 
+function reportUrl(kind: 'mdm' | 'training', params: Record<string, string | undefined>): string {
+  const qs = new URLSearchParams()
+  for (const [k, v] of Object.entries(params)) {
+    if (v && v.length) qs.set(k, v)
+  }
+  const suffix = kind === 'mdm' ? 'mdm.pdf' : 'training.pdf'
+  const q = qs.toString()
+  return `${BASE_URL}/reports/${suffix}${q ? `?${q}` : ''}`
+}
+
 async function fetchApi<T>(path: string, options?: RequestInit): Promise<ApiResponse<T>> {
   const res = await fetch(`${BASE_URL}${path}`, {
     headers: { 'Content-Type': 'application/json' },
@@ -75,6 +85,8 @@ export const api = {
     users: (sort: 'best' | 'worst' = 'worst', limit = 50, params?: { location?: string }) =>
       fetchApi<TrainingUserItem[]>(`/training/users?sort=${sort}&limit=${limit}${toQuery(params, false)}`),
 
+    modules: () => fetchApi<string[]>('/training/modules'),
+
     banner: () =>
       fetchApi<TrainingBanner>('/training/banner'),
   },
@@ -92,6 +104,13 @@ export const api = {
     },
     status: () =>
       fetchApi<{ mdm_loaded: boolean; training_loaded: boolean }>('/ingest/status'),
+  },
+
+  reports: {
+    mdmUrl: (params: { date_from?: string; date_to?: string; patch_id?: string; office?: string }) =>
+      reportUrl('mdm', params),
+    trainingUrl: (params: { date_from?: string; date_to?: string; location?: string; module?: string }) =>
+      reportUrl('training', params),
   },
 }
 

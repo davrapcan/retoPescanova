@@ -46,7 +46,7 @@ export function StackedHorizontalBar({ data, onSelect, activeOffice }: StackedHo
         color: '#64748B',
         formatter: (value: string, idx: number) => {
           const item = sorted[idx]
-          if (item && activeOffice && item.office === activeOffice) {
+          if (item && activeOffice && item.office_code === activeOffice) {
             return `{active|${value}}`
           }
           return value
