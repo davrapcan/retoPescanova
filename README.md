@@ -55,6 +55,24 @@ Usa los prompts de `CLAUDE_CODE_PROMPTS.md`. Sigue el plan de fases de la secci�
 - Sistema semáforo independiente: verde `#16A34A` / ámbar `#F59E0B` / rojo crítico `#DC2626`
 - Tipografía: Inter
 
+## Reportes PDF
+
+Dos reportes PDF se exponen desde el backend:
+
+- `GET /api/v1/reports/mdm.pdf` — filtros: `date_from`, `date_to`, `patch_id`, `office`
+- `GET /api/v1/reports/training.pdf` — filtros: `date_from`, `date_to`, `location`, `module`
+
+Desde la UI, cada pestaña tiene un botón compacto `PDF` en la parte superior derecha que abre un popover con los filtros disponibles. Pulsar "Generar PDF" abre el reporte en una pestaña nueva.
+
+### Desarrollo local en Windows
+
+WeasyPrint (motor HTML→PDF) depende de librerías nativas GTK3 que se instalan limpio en Debian/Ubuntu pero no en Windows nativo. El flujo recomendado en Windows:
+
+- Ejecutar el backend en Docker (`docker compose up backend`).
+- Ejecutar los tests del backend dentro del contenedor: `docker compose run --rm backend pytest -v`.
+
+Los tests que invocan WeasyPrint se marcan automáticamente como `skip` en el host Windows si las librerías nativas no están disponibles. Si quieres instalar WeasyPrint nativo en Windows, sigue https://doc.courtbouillon.org/weasyprint/stable/first_steps.html.
+
 ## Equipo
 
 OSIX Tech Development S.L · info@osix.tech
