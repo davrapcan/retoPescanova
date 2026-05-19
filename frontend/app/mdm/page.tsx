@@ -136,7 +136,7 @@ export default function MDMPage() {
             <StackedHorizontalBar
               data={filteredByOffice}
               activeOffice={office}
-              onSelect={(o) => setOffice(office === o.office ? undefined : o.office)}
+              onSelect={(o) => setOffice(office === o.office_code ? undefined : o.office_code)}
             />
           ) : (
             <EmptyState
