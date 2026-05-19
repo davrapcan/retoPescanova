@@ -4,6 +4,8 @@ import { thresholds } from '@/lib/theme'
 
 interface CountryDoubleBarProps {
   data: TrainingCountryItem[]
+  onSelect?: (country: TrainingCountryItem) => void
+  activeCountry?: string
 }
 
 function completionColor(rate: number): string {
@@ -17,19 +19,31 @@ function scoreOpacity(score: number): number {
   return 0.25 + (Math.min(score, 100) / 100) * 0.75
 }
 
-export function CountryDoubleBar({ data }: CountryDoubleBarProps) {
+export function CountryDoubleBar({ data, onSelect, activeCountry }: CountryDoubleBarProps) {
   if (!data.length) return null
 
   return (
-    <div className="flex flex-col gap-1.5 w-full">
+    <div className="flex flex-col w-full h-full" style={{ gap: '6px' }}>
+      <div className="flex-1 flex flex-col min-h-0 overflow-y-auto" style={{ gap: '6px' }}>
       {data.map((country) => {
         const compPct   = Math.min(country.completion_rate * 100, 100)
         const scorePct  = Math.min(country.avg_score_pct, 100)
         const compColor = completionColor(country.completion_rate)
         const scoreOp   = scoreOpacity(country.avg_score_pct)
 
+        const isActive = activeCountry === country.location
         return (
-          <div key={country.location} className="flex items-center gap-2">
+          <div
+            key={country.location}
+            onClick={onSelect ? () => onSelect(country) : undefined}
+            className="flex items-center gap-2 shrink-0 rounded transition-colors"
+            style={{
+              cursor: onSelect ? 'pointer' : 'default',
+              padding: '2px 4px',
+              backgroundColor: isActive ? 'rgba(0, 90, 156, 0.08)' : 'transparent',
+              outline: isActive ? '1px solid rgba(0, 90, 156, 0.35)' : 'none',
+            }}
+          >
             {/* Country label */}
             <div
               className="flex items-center gap-1 shrink-0"
@@ -94,10 +108,11 @@ export function CountryDoubleBar({ data }: CountryDoubleBarProps) {
           </div>
         )
       })}
+      </div>
 
       {/* Legend */}
       <div
-        className="flex gap-4 mt-1 pt-1"
+        className="flex gap-4 pt-1 shrink-0"
         style={{ borderTop: '0.5px solid var(--border)', fontSize: '10px', color: 'var(--text-tertiary)' }}
       >
         <div className="flex items-center gap-1">

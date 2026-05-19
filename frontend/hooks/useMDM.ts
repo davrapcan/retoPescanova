@@ -1,6 +1,7 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { api } from '@/lib/api'
+import { useDashboardFilters } from '@/lib/filters'
 import type { MDMBanner, MDMKpis, MDMOfficeItem, MDMPatchItem, MDMTimelineItem } from '@/lib/types'
 import {
   mockMDMBanner,
@@ -12,43 +13,113 @@ import {
 
 const USE_MOCKS = process.env.NEXT_PUBLIC_USE_MOCKS === 'true'
 
-function useMockOrFetch<T>(mockData: T, fetcher: () => Promise<{ data: T | null }>) {
+export interface HookResult<T> {
+  data: T | null
+  loading: boolean
+  error: string | null
+  lastUpdated: number | null
+  refetch: () => void
+}
+
+function useEndpoint<T>(
+  key: string,
+  fetcher: (signal: AbortSignal) => Promise<T | null>,
+  deps: ReadonlyArray<unknown>,
+): HookResult<T> {
+  const { refreshMs, refreshTick, refetch } = useDashboardFilters()
   const [data, setData] = useState<T | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [lastUpdated, setLastUpdated] = useState<number | null>(null)
+  const [tick, setTick] = useState(0)
+  const mounted = useRef(true)
 
   useEffect(() => {
-    if (USE_MOCKS) {
-      setData(mockData)
-      setLoading(false)
-      return
+    mounted.current = true
+    return () => {
+      mounted.current = false
     }
-    fetcher()
-      .then((r) => setData(r.data))
-      .catch((e) => setError(String(e)))
-      .finally(() => setLoading(false))
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  return { data, loading, error }
+  useEffect(() => {
+    const controller = new AbortController()
+    setLoading(true)
+    setError(null)
+    fetcher(controller.signal)
+      .then((value) => {
+        if (!mounted.current) return
+        setData(value)
+        setLastUpdated(Date.now())
+      })
+      .catch((e: unknown) => {
+        if (!mounted.current) return
+        if ((e as { name?: string })?.name === 'AbortError') return
+        setError(String(e))
+      })
+      .finally(() => {
+        if (!mounted.current) return
+        setLoading(false)
+      })
+    return () => controller.abort()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key, refreshTick, tick, ...deps])
+
+  useEffect(() => {
+    if (!refreshMs) return
+    const id = setInterval(() => setTick((t) => t + 1), refreshMs)
+    return () => clearInterval(id)
+  }, [refreshMs])
+
+  return { data, loading, error, lastUpdated, refetch }
 }
 
-export function useMDMKpis() {
-  return useMockOrFetch<MDMKpis>(mockMDMKpis, () => api.mdm.kpis())
+function withMock<T>(mock: T, fn: () => Promise<{ data: T | null }>) {
+  return async (_signal: AbortSignal): Promise<T | null> => {
+    if (USE_MOCKS) return mock
+    const res = await fn()
+    return res.data
+  }
 }
 
-export function useMDMByOffice() {
-  return useMockOrFetch<MDMOfficeItem[]>(mockMDMByOffice, () => api.mdm.byOffice())
+export function useMDMKpis(): HookResult<MDMKpis> {
+  const { range } = useDashboardFilters()
+  return useEndpoint(
+    `mdm.kpis|${range.date_from ?? ''}|${range.date_to ?? ''}`,
+    withMock(mockMDMKpis, () => api.mdm.kpis(range)),
+    [range.date_from, range.date_to],
+  )
 }
 
-export function useMDMTopPatches(limit = 5) {
-  return useMockOrFetch<MDMPatchItem[]>(mockMDMTopPatches, () => api.mdm.topPatches(limit))
+export function useMDMByOffice(): HookResult<MDMOfficeItem[]> {
+  const { range, office } = useDashboardFilters()
+  return useEndpoint(
+    `mdm.byOffice|${range.date_from ?? ''}|${range.date_to ?? ''}|${office ?? ''}`,
+    withMock(mockMDMByOffice, () => api.mdm.byOffice({ ...range, office })),
+    [range.date_from, range.date_to, office],
+  )
 }
 
-export function useMDMTimeline() {
-  return useMockOrFetch<MDMTimelineItem[]>(mockMDMTimeline, () => api.mdm.timeline())
+export function useMDMTopPatches(limit = 5): HookResult<MDMPatchItem[]> {
+  return useEndpoint(
+    `mdm.topPatches|${limit}`,
+    withMock(mockMDMTopPatches, () => api.mdm.topPatches(limit)),
+    [limit],
+  )
 }
 
-export function useMDMBanner() {
-  return useMockOrFetch<MDMBanner>(mockMDMBanner, () => api.mdm.banner())
+export function useMDMTimeline(): HookResult<MDMTimelineItem[]> {
+  const { range } = useDashboardFilters()
+  return useEndpoint(
+    `mdm.timeline|${range.date_from ?? ''}|${range.date_to ?? ''}`,
+    withMock(mockMDMTimeline, () => api.mdm.timeline(range)),
+    [range.date_from, range.date_to],
+  )
+}
+
+export function useMDMBanner(): HookResult<MDMBanner> {
+  return useEndpoint(
+    'mdm.banner',
+    withMock(mockMDMBanner, () => api.mdm.banner()),
+    [],
+  )
 }
