@@ -15,6 +15,7 @@ interface CardProps {
   /** Slug used for export filenames and panel deep-links. */
   panelId?: string
   children: React.ReactNode
+  onClick?: () => void
 }
 
 function ExpandIcon({ size = 14 }: { size?: number }) {
@@ -59,7 +60,10 @@ export function Card({
   lastUpdated,
   panelId,
   children,
+  onClick,
 }: CardProps) {
+  const clickable = !!onClick
+  const canExpand = expandable && !clickable
   const [expanded, setExpanded] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [inspectOpen, setInspectOpen] = useState(false)
@@ -140,25 +144,36 @@ export function Card({
   return (
     <>
       <div
-        className={`relative bg-white rounded-lg flex flex-col group transition-shadow ${className}`}
+        className={`relative bg-white rounded-lg flex flex-col ${clickable ? 'card-clickable' : ''} ${canExpand ? 'group transition-shadow' : ''} ${className}`}
         style={{
           border: '0.5px solid var(--border)',
           padding: '12px',
-          cursor: expandable ? 'zoom-in' : 'default',
+          overflow: 'hidden',
+          cursor: clickable ? 'pointer' : canExpand ? 'zoom-in' : 'default',
+          transition: 'box-shadow 0.15s ease, border-color 0.15s ease',
         }}
         onClick={
-          expandable
+          clickable
+            ? onClick
+            : canExpand
             ? (e) => {
                 if ((e.target as HTMLElement).closest('[data-no-expand]')) return
                 setExpanded(true)
               }
             : undefined
         }
-        role={expandable ? 'button' : undefined}
-        tabIndex={expandable ? 0 : undefined}
-        aria-label={expandable && title ? `Ampliar ${title}` : undefined}
+        role={clickable || canExpand ? 'button' : undefined}
+        tabIndex={clickable || canExpand ? 0 : undefined}
+        aria-label={canExpand && title ? `Ampliar ${title}` : undefined}
         onKeyDown={
-          expandable
+          clickable
+            ? (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  onClick!()
+                }
+              }
+            : canExpand
             ? (e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault()
@@ -168,18 +183,13 @@ export function Card({
             : undefined
         }
         onMouseEnter={
-          expandable
-            ? (e) => {
-                ;(e.currentTarget as HTMLElement).style.boxShadow =
-                  '0 6px 16px rgba(15,23,42,0.08)'
-              }
+          canExpand
+            ? (e) => { ;(e.currentTarget as HTMLElement).style.boxShadow = '0 6px 16px rgba(15,23,42,0.08)' }
             : undefined
         }
         onMouseLeave={
-          expandable
-            ? (e) => {
-                ;(e.currentTarget as HTMLElement).style.boxShadow = ''
-              }
+          canExpand
+            ? (e) => { ;(e.currentTarget as HTMLElement).style.boxShadow = '' }
             : undefined
         }
       >
@@ -188,11 +198,7 @@ export function Card({
             {title && (
               <p
                 className="uppercase font-medium"
-                style={{
-                  fontSize: '10px',
-                  color: 'var(--text-secondary)',
-                  letterSpacing: '0.5px',
-                }}
+                style={{ fontSize: '10px', color: 'var(--text-secondary)', letterSpacing: '0.5px' }}
               >
                 {title}
               </p>
@@ -309,16 +315,10 @@ export function Card({
               {expandable && (
                 <button
                   type="button"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    setExpanded(true)
-                  }}
+                  onClick={(e) => { e.stopPropagation(); setExpanded(true) }}
                   aria-label={title ? `Ampliar ${title}` : 'Ampliar'}
                   className="w-7 h-7 flex items-center justify-center rounded-md transition-colors opacity-70 hover:opacity-100"
-                  style={{
-                    color: 'var(--text-secondary)',
-                    background: 'rgba(148, 163, 184, 0.12)',
-                  }}
+                  style={{ color: 'var(--text-secondary)', background: 'rgba(148, 163, 184, 0.12)' }}
                 >
                   <ExpandIcon size={15} />
                 </button>
@@ -364,17 +364,12 @@ export function Card({
               >
                 ×
               </button>
-
               {(title || extra) && (
                 <div className="flex items-center justify-between shrink-0 mb-4 pr-12 gap-3">
                   {title && (
                     <p
                       className="uppercase font-medium"
-                      style={{
-                        fontSize: '13px',
-                        color: 'var(--text-secondary)',
-                        letterSpacing: '0.6px',
-                      }}
+                      style={{ fontSize: '13px', color: 'var(--text-secondary)', letterSpacing: '0.6px' }}
                     >
                       {title}
                     </p>
@@ -382,19 +377,11 @@ export function Card({
                   {extra && <div className="ml-auto">{extra}</div>}
                 </div>
               )}
-
               <div className="flex-1 min-h-0">{children}</div>
             </div>
-
             <style jsx>{`
-              @keyframes cardFadeIn {
-                from { opacity: 0; }
-                to   { opacity: 1; }
-              }
-              @keyframes cardPop {
-                from { opacity: 0; transform: scale(0.94); }
-                to   { opacity: 1; transform: scale(1); }
-              }
+              @keyframes cardFadeIn { from { opacity: 0; } to { opacity: 1; } }
+              @keyframes cardPop { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: scale(1); } }
             `}</style>
           </div>,
           document.body,

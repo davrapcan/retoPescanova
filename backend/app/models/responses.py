@@ -134,3 +134,13 @@ class TrainingBanner(BaseModel):
     countries_below_threshold: int
     top_friction_module: Optional[str] = None
     global_completion_rate: float
+
+
+class TrainingUserItem(BaseModel):
+    user_id: str
+    location: str
+    score_pct: float
+    completion_rate: float
+    total_duration_min: int
+    modules_completed: int
+    modules_assigned: int

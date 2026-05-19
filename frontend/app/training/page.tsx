@@ -1,4 +1,5 @@
 'use client'
+import { useState } from 'react'
 import { Card } from '@/components/ui/Card'
 import { KPICard } from '@/components/ui/KPICard'
 import { RiskBanner } from '@/components/ui/RiskBanner'
@@ -8,6 +9,8 @@ import { TripleSparkline } from '@/components/charts/TripleSparkline'
 import { FrictionHeatmap } from '@/components/charts/FrictionHeatmap'
 import { ScoreHistogram } from '@/components/charts/ScoreHistogram'
 import { OutliersList } from '@/components/charts/OutliersList'
+import { CountriesDetailModal } from '@/components/modals/CountriesDetailModal'
+import { UsersDetailModal } from '@/components/modals/UsersDetailModal'
 import {
   useTrainingKpis,
   useTrainingBanner,
@@ -39,6 +42,9 @@ export default function TrainingPage() {
   const friction     = useTrainingFriction()
   const distribution = useTrainingDistribution()
   const outliers     = useTrainingOutliers(4)
+
+  const [countriesModalOpen, setCountriesModalOpen] = useState(false)
+  const [usersModalOpen, setUsersModalOpen] = useState(false)
 
   const kd = kpis.data
   const bd = banner.data
@@ -159,7 +165,9 @@ export default function TrainingPage() {
               {Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} h="h-5" />)}
             </div>
           ) : timeline.data?.length ? (
-            <TripleSparkline data={timeline.data} />
+            <div className="h-full flex flex-col justify-center">
+              <TripleSparkline data={timeline.data} />
+            </div>
           ) : (
             <EmptyState />
           )}
