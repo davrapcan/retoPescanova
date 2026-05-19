@@ -9,6 +9,57 @@ from app.transforms.normalize import normalize_location, user_score_pct
 EXPECTED_EVENTS = 10_988
 EXPECTED_USERS = 1_230
 
+# Map each Assignment Name variant (any language) to a canonical Spanish course name.
+# Curated by hand from Assignment Name uniques in the source Excel.
+_ASSIGNMENT_TO_COURSE = {
+    # Microaprendizaje ciberseguridad
+    "Microaprendizaje ciberseguridad": "Microaprendizaje ciberseguridad",
+    "Cybersecurity microlearning": "Microaprendizaje ciberseguridad",
+    "Cybersécurité - Microapprentissage": "Microaprendizaje ciberseguridad",
+    "Cibersegurança - Microaprendizagem": "Microaprendizaje ciberseguridad",
+    "Κυβερνοασφάλεια - Μικρομάθηση": "Microaprendizaje ciberseguridad",
+    # Más allá de las contraseñas
+    "Más allá de las contraseñas": "Más allá de las contraseñas",
+    "Beyond Passwords": "Más allá de las contraseñas",
+    "Au-delà des mots de passe": "Más allá de las contraseñas",
+    "Além das palavras-passe": "Más allá de las contraseñas",
+    "Oltre le password": "Más allá de las contraseñas",
+    "Πέρα από τους κωδικούς πρόσβασης": "Más allá de las contraseñas",
+    # Riesgos de compartir contraseñas
+    "Riesgos de compartir contraseñas": "Riesgos de compartir contraseñas",
+    "Risk of password sharing": "Riesgos de compartir contraseñas",
+    "Risques liés au partage de mots de passe": "Riesgos de compartir contraseñas",
+    "Riscos de partilhar palavras-passe": "Riesgos de compartir contraseñas",
+    "Κίνδυνοι από την κοινή χρήση κωδικών πρόσβασης": "Riesgos de compartir contraseñas",
+    # Seguridad básica: Contraseñas
+    "Seguridad básica: Contraseñas y Autentificación": "Seguridad básica: contraseñas",
+    "Basic Security: Passwords and Authentication": "Seguridad básica: contraseñas",
+    "Sécurité de base : mots de passe et authentification": "Seguridad básica: contraseñas",
+    "Segurança básica: Senhas e autenticação": "Seguridad básica: contraseñas",
+    "Sicurezza di base: password e autenticazione": "Seguridad básica: contraseñas",
+    "Βασική ασφάλεια: Κωδικοί πρόσβασης και αυθεντικοποίηση": "Seguridad básica: contraseñas",
+    # Seguridad básica en dispositivos móviles
+    "Seguridad básica en dispositivos móviles": "Seguridad básica: móviles",
+    "Seguridad Básica: Dispositivos móviles REP": "Seguridad básica: móviles",
+    "Basic security on mobile devices": "Seguridad básica: móviles",
+    "Sécurité de base sur les appareils mobiles": "Seguridad básica: móviles",
+    "Segurança básica em dispositivos móveis": "Seguridad básica: móviles",
+    "Sicurezza di base sui dispositivi mobili": "Seguridad básica: móviles",
+    "Βασική ασφάλεια σε κινητές συσκευές": "Seguridad básica: móviles",
+    # Cursos que solo existen en una lengua (mantener tal cual)
+    "Ransomware, qué es y como evitarlo": "Ransomware, qué es y como evitarlo",
+    "Phishing e ingenieria social": "Phishing e ingeniería social",
+    "Riesgos IA": "Riesgos IA",
+    "Privacidad en IA": "Privacidad en IA",
+}
+
+
+def normalize_assignment(name: str) -> str:
+    """Map an Assignment Name to its canonical course name. Unknowns pass through."""
+    if not isinstance(name, str):
+        return ""
+    return _ASSIGNMENT_TO_COURSE.get(name.strip(), name.strip())
+
 
 def load_mdm_xlsx(path) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """Returns (mdm_events, mdm_devices, mdm_patches)."""
@@ -114,6 +165,7 @@ def load_training_xlsx(path) -> tuple[pd.DataFrame, pd.DataFrame]:
         "Module Attempt Completed Date and Time (UTC)": "completed_at",
         "Module Attempt Duration (min)": "duration_min",
         "Module Name (User Display)": "module_name",
+        "Assignment Name": "assignment_name",
         "Location": "location_raw",
         "Module Status": "module_status",
     })
@@ -127,8 +179,9 @@ def load_training_xlsx(path) -> tuple[pd.DataFrame, pd.DataFrame]:
     events["started_at"] = pd.to_datetime(events["started_at"], errors="coerce")
     events["completed_at"] = pd.to_datetime(events["completed_at"], errors="coerce")
     events["location"] = events["location_raw"].fillna("").apply(normalize_location)
+    events["assignment_name"] = events["assignment_name"].fillna("").apply(normalize_assignment)
     events = events[["user_id", "module_event_score", "started_at", "completed_at",
-                      "duration_min", "module_name", "location_raw", "location"]]
+                      "duration_min", "module_name", "assignment_name", "location_raw", "location"]]
 
     # ── users ────────────────────────────────────────────────────────────────
     users = users_raw.rename(columns={

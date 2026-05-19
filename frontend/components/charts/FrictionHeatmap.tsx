@@ -26,16 +26,23 @@ export function FrictionHeatmap({ data }: FrictionHeatmapProps) {
     return match ? match.location_iso : c.slice(0, 2).toUpperCase()
   })
 
-  // Build echarts data array: [x_idx, y_idx, value, opacity_value, cell_data]
-  const chartData = cells
-    .filter((c) => c.friction_score !== null)
+  // Escala dinámica: usar el rango real para que el gradiente use todo el espectro
+  const scoredCells = cells.filter((c) => c.friction_score !== null)
+  const frictionMax = scoredCells.length
+    ? Math.ceil(Math.max(...scoredCells.map((c) => c.friction_score ?? 0)))
+    : 100
+  const frictionMin = scoredCells.length
+    ? Math.floor(Math.min(...scoredCells.map((c) => c.friction_score ?? 0)))
+    : 0
+
+  // Build echarts data array: [x_idx, y_idx, value]
+  const chartData = scoredCells
     .map((c) => {
       const xIdx = countries.indexOf(c.location)
       const yIdx = modules.indexOf(c.module_name)
       if (xIdx === -1 || yIdx === -1) return null
-      const opacity = c.low_sample ? 0.4 : Math.max(0.4, Math.min(1, c.user_count / 70))
       return {
-        value: [xIdx, yIdx, c.friction_score ?? 0, opacity],
+        value: [xIdx, yIdx, c.friction_score ?? 0],
         cell: c,
       }
     })
@@ -52,8 +59,8 @@ export function FrictionHeatmap({ data }: FrictionHeatmapProps) {
   const option = {
     grid: {
       top: 8,
-      bottom: 60,
-      left: 172,
+      bottom: 22,
+      left: 200,
       right: selected ? 220 : 16,
       containLabel: false,
     },
@@ -64,7 +71,7 @@ export function FrictionHeatmap({ data }: FrictionHeatmapProps) {
       axisLine: { show: false },
       axisTick: { show: false },
       axisLabel: {
-        fontSize: 10,
+        fontSize: 13,
         color: '#005A9C',
         fontWeight: 600,
         interval: 0,
@@ -77,37 +84,27 @@ export function FrictionHeatmap({ data }: FrictionHeatmapProps) {
       axisLine: { show: false },
       axisTick: { show: false },
       axisLabel: {
-        fontSize: 10,
+        fontSize: 13,
         color: '#0F172A',
-        width: 160,
+        width: 186,
         overflow: 'truncate',
         interval: 0,
       },
     },
     visualMap: {
-      min: 0,
-      max: 100,
+      min: frictionMin,
+      max: frictionMax,
       calculable: false,
-      show: true,
-      orient: 'horizontal',
-      left: 0,
-      bottom: 0,
-      itemWidth: 120,
-      itemHeight: 8,
-      text: ['Fricción alta', 'Baja'],
-      textStyle: { fontSize: 9, color: '#94A3B8' },
+      show: false,
       inRange: {
-        color: ['#16A34A', '#F59E0B', '#DC2626'],
+        color: ['#4ADE80', '#FACC15', '#EF4444'],
       },
     },
     series: [
       {
         name: 'Friction',
         type: 'heatmap',
-        data: chartData.map((d) => ({
-          value: d.value,
-          itemStyle: { opacity: d.value[3] },
-        })),
+        data: chartData.map((d) => ({ value: d.value })),
         label: { show: false },
         emphasis: {
           itemStyle: {
@@ -138,6 +135,7 @@ export function FrictionHeatmap({ data }: FrictionHeatmapProps) {
     ],
     tooltip: {
       trigger: 'item',
+      confine: true,
       backgroundColor: '#fff',
       borderColor: '#E2E8F0',
       borderWidth: 1,
@@ -149,14 +147,31 @@ export function FrictionHeatmap({ data }: FrictionHeatmapProps) {
   if (!mounted) return <div className="w-full h-full" style={{ backgroundColor: '#F8FAFC' }} />
 
   return (
-    <div className="w-full flex gap-3" style={{ minHeight: 0 }}>
-      <div className="flex-1" style={{ minWidth: 0 }}>
-        <ReactECharts
-          option={option}
-          style={{ width: '100%', height: '100%' }}
-          onEvents={{ click: handleClick }}
-          notMerge
-        />
+    <div className="w-full h-full flex gap-3" style={{ minHeight: 0 }}>
+      <div className="flex-1 h-full flex flex-col" style={{ minWidth: 0 }}>
+        <div className="flex-1" style={{ minHeight: 0 }}>
+          <ReactECharts
+            option={option}
+            style={{ width: '100%', height: '100%' }}
+            onEvents={{ click: handleClick }}
+            notMerge
+          />
+        </div>
+        <div
+          className="shrink-0 flex items-center gap-1.5"
+          style={{ paddingLeft: '200px', paddingBottom: '2px', pointerEvents: 'none' }}
+        >
+          <span style={{ fontSize: '9px', color: '#94A3B8' }}>Baja</span>
+          <div
+            style={{
+              width: '80px',
+              height: '6px',
+              borderRadius: '3px',
+              background: 'linear-gradient(to right, #4ADE80, #FACC15, #EF4444)',
+            }}
+          />
+          <span style={{ fontSize: '9px', color: '#94A3B8' }}>Fricción alta</span>
+        </div>
       </div>
 
       {/* Detail panel */}

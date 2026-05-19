@@ -37,7 +37,7 @@ export function CountryDoubleBar({ data }: CountryDoubleBarProps) {
             >
               <span
                 className="truncate"
-                style={{ fontSize: '10px', color: 'var(--text-primary)', fontWeight: 500 }}
+                style={{ fontSize: '11px', color: 'var(--text-primary)', fontWeight: 500 }}
                 title={country.location}
               >
                 {country.location}
@@ -85,7 +85,7 @@ export function CountryDoubleBar({ data }: CountryDoubleBarProps) {
             {/* Label */}
             <div
               className="shrink-0 text-right"
-              style={{ width: '80px', fontSize: '10px', color: 'var(--text-secondary)' }}
+              style={{ width: '80px', fontSize: '11px', color: 'var(--text-secondary)' }}
             >
               <span style={{ color: compColor, fontWeight: 600 }}>{Math.round(compPct)}%</span>
               <span style={{ color: 'var(--text-tertiary)' }}> · </span>
@@ -98,7 +98,7 @@ export function CountryDoubleBar({ data }: CountryDoubleBarProps) {
       {/* Legend */}
       <div
         className="flex gap-4 mt-1 pt-1"
-        style={{ borderTop: '0.5px solid var(--border)', fontSize: '9px', color: 'var(--text-tertiary)' }}
+        style={{ borderTop: '0.5px solid var(--border)', fontSize: '10px', color: 'var(--text-tertiary)' }}
       >
         <div className="flex items-center gap-1">
           <div style={{ width: '12px', height: '5px', background: 'var(--ok)', borderRadius: '1px' }} />

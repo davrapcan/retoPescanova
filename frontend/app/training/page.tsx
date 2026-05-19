@@ -113,7 +113,7 @@ export default function TrainingPage() {
       </div>
 
       {/* ── Row 2: Countries + Timeline — fixed height ── */}
-      <div className="grid grid-cols-2 shrink-0" style={{ gap: '6px', height: '180px' }}>
+      <div className="grid grid-cols-2 shrink-0" style={{ gap: '6px', height: '130px' }}>
         <Card title="¿Qué países están en riesgo formativo?">
           {byCountry.loading ? (
             <div className="flex flex-col gap-1.5">
@@ -142,14 +142,14 @@ export default function TrainingPage() {
       </div>
 
       {/* ── Row 3: Heatmap protagonista — fixed height ── */}
-      <div className="shrink-0" style={{ height: '210px' }}>
+      <div className="shrink-0" style={{ height: '230px' }}>
         <div
           className="h-full rounded-lg bg-white"
           style={{ border: '0.5px solid var(--border)', padding: '10px 12px 6px' }}
         >
           <p
             className="uppercase font-medium mb-2 shrink-0"
-            style={{ fontSize: '10px', color: 'var(--text-secondary)', letterSpacing: '0.5px' }}
+            style={{ fontSize: '11px', color: 'var(--text-secondary)', letterSpacing: '0.5px' }}
           >
             ¿Qué módulos generan más fricción por país?
           </p>
@@ -174,7 +174,7 @@ export default function TrainingPage() {
           >
             <p
               className="uppercase font-medium mb-2 shrink-0"
-              style={{ fontSize: '10px', color: 'var(--text-secondary)', letterSpacing: '0.5px' }}
+              style={{ fontSize: '11px', color: 'var(--text-secondary)', letterSpacing: '0.5px' }}
             >
               ¿Cómo se distribuye el score?
             </p>
@@ -197,7 +197,7 @@ export default function TrainingPage() {
           >
             <p
               className="uppercase font-medium mb-2 shrink-0"
-              style={{ fontSize: '10px', color: 'var(--text-secondary)', letterSpacing: '0.5px' }}
+              style={{ fontSize: '11px', color: 'var(--text-secondary)', letterSpacing: '0.5px' }}
             >
               ¿Quién invierte más tiempo con peor resultado?
             </p>

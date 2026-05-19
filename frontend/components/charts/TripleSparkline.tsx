@@ -37,7 +37,7 @@ function Sparkline({ values, color, label, formatValue, showMonths }: SparkProps
       {/* Label */}
       <span
         className="shrink-0"
-        style={{ width: '72px', fontSize: '9px', color: 'var(--text-secondary)', fontWeight: 500 }}
+        style={{ width: '76px', fontSize: '10px', color: 'var(--text-secondary)', fontWeight: 500 }}
       >
         {label}
       </span>
@@ -66,26 +66,33 @@ function Sparkline({ values, color, label, formatValue, showMonths }: SparkProps
             r="2.5"
             fill={color}
           />
-          {/* Month labels under last sparkline */}
-          {showMonths &&
-            showMonths.map((m, i) => (
-              <text
+        </svg>
+        {/* Month labels as HTML to avoid stretching from SVG scaling */}
+        {showMonths && (
+          <div className="relative" style={{ height: '12px' }}>
+            {showMonths.map((m, i) => (
+              <span
                 key={i}
-                x={xs[i]}
-                y={H + 10}
-                textAnchor="middle"
-                style={{ fontSize: '7px', fill: 'var(--text-tertiary)' }}
+                style={{
+                  position: 'absolute',
+                  left: `${(xs[i] / W) * 100}%`,
+                  transform: 'translateX(-50%)',
+                  fontSize: '9px',
+                  color: 'var(--text-tertiary)',
+                  whiteSpace: 'nowrap',
+                }}
               >
                 {m}
-              </text>
+              </span>
             ))}
-        </svg>
+          </div>
+        )}
       </div>
 
       {/* Current value */}
       <span
         className="shrink-0"
-        style={{ width: '36px', fontSize: '10px', fontWeight: 600, color, textAlign: 'right' }}
+        style={{ width: '36px', fontSize: '11px', fontWeight: 600, color, textAlign: 'right' }}
       >
         {formatValue(last)}
       </span>
@@ -93,7 +100,7 @@ function Sparkline({ values, color, label, formatValue, showMonths }: SparkProps
       {/* Delta */}
       <span
         className="shrink-0"
-        style={{ width: '32px', fontSize: '9px', color: deltaColor, textAlign: 'right' }}
+        style={{ width: '32px', fontSize: '10px', color: deltaColor, textAlign: 'right' }}
       >
         {sign}{formatValue(delta)}
       </span>
