@@ -3,7 +3,6 @@ import io
 import re
 import pandas as pd
 
-from app.transforms.caesar import decode_caesar, auto_detect_shift
 from app.transforms.normalize import normalize_location, user_score_pct
 
 EXPECTED_EVENTS = 10_988
@@ -109,18 +108,12 @@ def load_mdm_xlsx(path) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     devices["last_contact_at"] = pd.to_datetime(devices["last_contact_at"], errors="coerce")
     devices["last_deployment_at"] = pd.to_datetime(devices["last_deployment_at"], errors="coerce")
 
-    # Detect and apply best Caesar shift for Remote Office
-    raw_sample = devices["remote_office_raw"].dropna().astype(str).tolist()
-    shift = auto_detect_shift(raw_sample)
-    devices["remote_office_decoded"] = devices["remote_office_raw"].apply(
-        lambda x: decode_caesar(str(x), shift) if pd.notna(x) else ""
+    devices["remote_office_code"] = devices["remote_office_raw"].apply(
+        lambda x: m.group(1) if (m := re.search(r"\(([A-Z]{2,5})\)", str(x))) else ""
     )
-    devices["remote_office_code"] = devices["remote_office_decoded"].apply(
-        lambda x: m.group(1) if (m := re.search(r"\(([A-Z]{2,5})\)", x)) else ""
-    )
-    devices = devices[["computer_name", "remote_office_raw", "remote_office_decoded",
-                        "remote_office_code", "missing_patches", "installed_patches",
-                        "failed_patches", "patching_status", "last_contact_at", "last_deployment_at"]]
+    devices = devices[["computer_name", "remote_office_raw", "remote_office_code",
+                        "missing_patches", "installed_patches", "failed_patches",
+                        "patching_status", "last_contact_at", "last_deployment_at"]]
 
     # ── patches ─────────────────────────────────────────────────────────────
     patches = patches.rename(columns={

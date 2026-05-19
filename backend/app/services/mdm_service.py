@@ -60,11 +60,11 @@ def get_by_office(
     df = _filter_devices(date_from, date_to)
     if office:
         offices = [o.strip() for o in office.split(",")]
-        df = df[df["remote_office_decoded"].isin(offices)]
+        df = df[df["remote_office_raw"].isin(offices)]
 
     result = []
     for (off_name, off_code), grp in df.groupby(
-        ["remote_office_decoded", "remote_office_code"]
+        ["remote_office_raw", "remote_office_code"]
     ):
         counts = grp["patching_status"].value_counts()
         result.append(MDMOfficeItem(
@@ -130,7 +130,7 @@ def get_banner() -> MDMBanner:
     if failed_count > 0:
         failed_by_office = (
             df[df["patching_status"] == _STATUS_FAILED]
-            .groupby("remote_office_decoded")
+            .groupby("remote_office_raw")
             .size()
         )
         if not failed_by_office.empty:
