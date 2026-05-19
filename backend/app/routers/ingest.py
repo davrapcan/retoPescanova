@@ -26,13 +26,13 @@ async def ingest_mdm(file: UploadFile = File(...)):
     except Exception as exc:
         raise HTTPException(status_code=422, detail=str(exc))
 
-    store.mdm_events = events
-    store.mdm_devices = devices
-    store.mdm_patches = patches
-
     _save_parquet("mdm_events", events)
     _save_parquet("mdm_devices", devices)
     _save_parquet("mdm_patches", patches)
+
+    store.mdm_events = events
+    store.mdm_devices = devices
+    store.mdm_patches = patches
 
     return {"data": {
         "events": len(events),
@@ -51,11 +51,11 @@ async def ingest_training(file: UploadFile = File(...)):
     except Exception as exc:
         raise HTTPException(status_code=422, detail=str(exc))
 
-    store.training_events = events
-    store.training_users = users
-
     _save_parquet("training_events", events)
     _save_parquet("training_users", users)
+
+    store.training_events = events
+    store.training_users = users
 
     return {"data": {
         "events": len(events),
