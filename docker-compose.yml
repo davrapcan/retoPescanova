@@ -14,19 +14,20 @@ services:
     restart: unless-stopped
 
   frontend:
-    image: node:20-alpine
-    working_dir: /app
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
     ports:
       - "3000:3000"
     volumes:
       - ./frontend:/app
       - /app/node_modules
       - /app/.next
-    command: sh -c "npm install && npm run dev"
     environment:
       - NEXT_TELEMETRY_DISABLED=1
       - WATCHPACK_POLLING=true
       - CHOKIDAR_USEPOLLING=true
+      - CHOKIDAR_INTERVAL=300
     depends_on:
       - backend
     restart: unless-stopped

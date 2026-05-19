@@ -32,38 +32,6 @@ function Skeleton({ className = '' }: { className?: string }) {
   return <div className={`animate-pulse rounded bg-slate-100 ${className}`} />
 }
 
-function ChartCard({
-  title,
-  children,
-  extra,
-  className = '',
-}: {
-  title: string
-  children: React.ReactNode
-  extra?: React.ReactNode
-  className?: string
-}) {
-  return (
-    <div
-      className={`bg-white rounded-lg flex flex-col ${className}`}
-      style={{ border: '0.5px solid var(--border)' }}
-    >
-      <div className="flex items-center justify-between px-3 pt-3 shrink-0">
-        <p
-          className="uppercase font-medium"
-          style={{ fontSize: '10px', color: 'var(--text-secondary)', letterSpacing: '0.5px' }}
-        >
-          {title}
-        </p>
-        {extra}
-      </div>
-      <div className="flex-1 min-h-0 px-3 pb-3 pt-1">
-        {children}
-      </div>
-    </div>
-  )
-}
-
 const MDM_LEGEND = [
   { color: chartPalette.mdm.completed,  label: 'Completed' },
   { color: chartPalette.mdm.missing,    label: 'Missing' },
@@ -159,7 +127,7 @@ export default function MDMPage() {
         style={{ gridTemplateColumns: '3fr 2fr' }}
       >
         {/* CORE 4 — Ranking por Remote Office */}
-        <ChartCard
+        <Card
           title="¿qué oficinas concentran más riesgo?"
           extra={<LegendDots items={MDM_LEGEND} />}
         >
@@ -173,10 +141,10 @@ export default function MDMPage() {
               description="No hay oficinas para el filtro activo."
             />
           )}
-        </ChartCard>
+        </Card>
 
         {/* CORE 2 — Top parches críticos */}
-        <ChartCard title="¿qué parches hay que aplicar primero?">
+        <Card title="¿qué parches hay que aplicar primero?">
           {topPatches.loading ? (
             <div className="flex flex-col gap-2">
               {[0, 1, 2, 3, 4].map((i) => <Skeleton key={i} className="h-8" />)}
@@ -186,12 +154,12 @@ export default function MDMPage() {
           ) : (
             <EmptyState title="Sin parches" description="No hay parches críticos registrados." />
           )}
-        </ChartCard>
+        </Card>
       </div>
 
       {/* ── CORE 3 — Evolución temporal ──────────────────────────── */}
       <div className="shrink-0" style={{ height: '200px' }}>
-        <ChartCard title="¿cómo evoluciona el despliegue diario?" className="h-full">
+        <Card title="¿cómo evoluciona el despliegue diario?" className="h-full">
           {timeline.loading ? (
             <Skeleton className="h-full" />
           ) : timeline.data && timeline.data.length > 0 ? (
@@ -199,7 +167,7 @@ export default function MDMPage() {
           ) : (
             <EmptyState title="Sin datos temporales" description="No hay eventos registrados." />
           )}
-        </ChartCard>
+        </Card>
       </div>
     </div>
   )
