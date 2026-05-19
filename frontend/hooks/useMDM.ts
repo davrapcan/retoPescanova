@@ -2,78 +2,53 @@
 import { useEffect, useState } from 'react'
 import { api } from '@/lib/api'
 import type { MDMBanner, MDMKpis, MDMOfficeItem, MDMPatchItem, MDMTimelineItem } from '@/lib/types'
+import {
+  mockMDMBanner,
+  mockMDMByOffice,
+  mockMDMKpis,
+  mockMDMTimeline,
+  mockMDMTopPatches,
+} from '@/lib/mocks/mdm'
 
-export function useMDMKpis() {
-  const [data, setData] = useState<MDMKpis | null>(null)
+const USE_MOCKS = process.env.NEXT_PUBLIC_USE_MOCKS === 'true'
+
+function useMockOrFetch<T>(mockData: T, fetcher: () => Promise<{ data: T | null }>) {
+  const [data, setData] = useState<T | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    api.mdm.kpis()
+    if (USE_MOCKS) {
+      setData(mockData)
+      setLoading(false)
+      return
+    }
+    fetcher()
       .then((r) => setData(r.data))
       .catch((e) => setError(String(e)))
       .finally(() => setLoading(false))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return { data, loading, error }
+}
+
+export function useMDMKpis() {
+  return useMockOrFetch<MDMKpis>(mockMDMKpis, () => api.mdm.kpis())
 }
 
 export function useMDMByOffice() {
-  const [data, setData] = useState<MDMOfficeItem[] | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    api.mdm.byOffice()
-      .then((r) => setData(r.data))
-      .catch((e) => setError(String(e)))
-      .finally(() => setLoading(false))
-  }, [])
-
-  return { data, loading, error }
+  return useMockOrFetch<MDMOfficeItem[]>(mockMDMByOffice, () => api.mdm.byOffice())
 }
 
 export function useMDMTopPatches(limit = 5) {
-  const [data, setData] = useState<MDMPatchItem[] | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    api.mdm.topPatches(limit)
-      .then((r) => setData(r.data))
-      .catch((e) => setError(String(e)))
-      .finally(() => setLoading(false))
-  }, [limit])
-
-  return { data, loading, error }
+  return useMockOrFetch<MDMPatchItem[]>(mockMDMTopPatches, () => api.mdm.topPatches(limit))
 }
 
 export function useMDMTimeline() {
-  const [data, setData] = useState<MDMTimelineItem[] | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    api.mdm.timeline()
-      .then((r) => setData(r.data))
-      .catch((e) => setError(String(e)))
-      .finally(() => setLoading(false))
-  }, [])
-
-  return { data, loading, error }
+  return useMockOrFetch<MDMTimelineItem[]>(mockMDMTimeline, () => api.mdm.timeline())
 }
 
 export function useMDMBanner() {
-  const [data, setData] = useState<MDMBanner | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    api.mdm.banner()
-      .then((r) => setData(r.data))
-      .catch((e) => setError(String(e)))
-      .finally(() => setLoading(false))
-  }, [])
-
-  return { data, loading, error }
+  return useMockOrFetch<MDMBanner>(mockMDMBanner, () => api.mdm.banner())
 }
