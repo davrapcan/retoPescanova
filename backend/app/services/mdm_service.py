@@ -1,22 +1,164 @@
-"""MDM aggregation logic — stub, to be implemented in C1."""
+"""MDM aggregation logic."""
+from typing import Optional
+import pandas as pd
+
+from app.models.responses import (
+    MDMBanner, MDMKpis, MDMOfficeItem, MDMPatchItem, MDMTimelineItem,
+)
 from app.storage.memory import store
 
-
-def get_kpis():
-    raise NotImplementedError
-
-
-def get_by_office():
-    raise NotImplementedError
+_STATUS_COMPLETED = "Patching Completed"
+_STATUS_MISSING = "Patches Missing"
+_STATUS_INPROGRESS = "Patching Inprogress"
+_STATUS_FAILED = "Patching Failed"
 
 
-def get_top_patches(limit: int = 5):
-    raise NotImplementedError
+def _filter_devices(date_from: Optional[str], date_to: Optional[str]) -> pd.DataFrame:
+    df = store.mdm_devices.copy()
+    if date_from:
+        df = df[df["last_deployment_at"] >= pd.Timestamp(date_from)]
+    if date_to:
+        df = df[df["last_deployment_at"] <= pd.Timestamp(date_to)]
+    return df
 
 
-def get_timeline():
-    raise NotImplementedError
+def _filter_events(date_from: Optional[str], date_to: Optional[str]) -> pd.DataFrame:
+    df = store.mdm_events.copy()
+    if date_from:
+        df = df[df["deployed_at"] >= pd.Timestamp(date_from)]
+    if date_to:
+        df = df[df["deployed_at"] <= pd.Timestamp(date_to)]
+    return df
 
 
-def get_banner():
-    raise NotImplementedError
+def get_kpis(date_from: Optional[str] = None, date_to: Optional[str] = None) -> MDMKpis:
+    df = _filter_devices(date_from, date_to)
+    total = len(df)
+    counts = df["patching_status"].value_counts()
+    completed = int(counts.get(_STATUS_COMPLETED, 0))
+    missing = int(counts.get(_STATUS_MISSING, 0))
+    in_progress = int(counts.get(_STATUS_INPROGRESS, 0))
+    failed = int(counts.get(_STATUS_FAILED, 0))
+    return MDMKpis(
+        completed=completed,
+        missing=missing,
+        in_progress=in_progress,
+        failed=failed,
+        total=total,
+        completed_pct=round(completed / total * 100, 1) if total else 0.0,
+        missing_pct=round(missing / total * 100, 1) if total else 0.0,
+        in_progress_pct=round(in_progress / total * 100, 1) if total else 0.0,
+        failed_pct=round(failed / total * 100, 1) if total else 0.0,
+    )
+
+
+def get_by_office(
+    date_from: Optional[str] = None,
+    date_to: Optional[str] = None,
+    office: Optional[str] = None,
+) -> list[MDMOfficeItem]:
+    df = _filter_devices(date_from, date_to)
+    if office:
+        offices = [o.strip() for o in office.split(",")]
+        df = df[df["remote_office_decoded"].isin(offices)]
+
+    result = []
+    for (off_name, off_code), grp in df.groupby(
+        ["remote_office_decoded", "remote_office_code"]
+    ):
+        counts = grp["patching_status"].value_counts()
+        result.append(MDMOfficeItem(
+            office=off_name,
+            office_code=off_code,
+            completed=int(counts.get(_STATUS_COMPLETED, 0)),
+            missing=int(counts.get(_STATUS_MISSING, 0)),
+            in_progress=int(counts.get(_STATUS_INPROGRESS, 0)),
+            failed=int(counts.get(_STATUS_FAILED, 0)),
+            total=len(grp),
+        ))
+    result.sort(key=lambda x: x.total, reverse=True)
+    return result
+
+
+def get_top_patches(limit: int = 5) -> list[MDMPatchItem]:
+    df = store.mdm_patches.copy()
+    total_devices = len(store.mdm_devices)
+    df = df.sort_values("risk_score", ascending=False).head(limit)
+    return [
+        MDMPatchItem(
+            patch_id=int(row["patch_id"]),
+            bulletin_id=str(row["bulletin_id"]),
+            description=str(row["description"]),
+            missing_systems=int(row["missing_systems"]),
+            installed_systems=int(row["installed_systems"]),
+            failed_systems=int(row["failed_systems"]),
+            risk_score=int(row["risk_score"]),
+            total_devices=total_devices,
+        )
+        for _, row in df.iterrows()
+    ]
+
+
+def get_timeline(
+    date_from: Optional[str] = None,
+    date_to: Optional[str] = None,
+) -> list[MDMTimelineItem]:
+    df = _filter_events(date_from, date_to).copy()
+    df["date_only"] = df["deployed_at"].dt.date
+    grouped = df.groupby(["date_only", "deployment_status"]).size().unstack(fill_value=0)
+
+    items = []
+    for date_val, row in grouped.iterrows():
+        items.append(MDMTimelineItem(
+            date=str(date_val),
+            installed=int(row.get("Installed", 0)),
+            delay_in_deployment=int(row.get("Delay in Deployment", 0)),
+            reboot_pending=int(row.get("Reboot Pending", 0)),
+            failed=int(row.get("Failed", 0)),
+        ))
+    items.sort(key=lambda x: x.date)
+    return items
+
+
+def get_banner() -> MDMBanner:
+    df = store.mdm_devices
+    total = len(df)
+    failed_count = int((df["patching_status"] == _STATUS_FAILED).sum())
+    missing_count = int((df["patching_status"] == _STATUS_MISSING).sum())
+
+    top_office: Optional[str] = None
+    if failed_count > 0:
+        failed_by_office = (
+            df[df["patching_status"] == _STATUS_FAILED]
+            .groupby("remote_office_decoded")
+            .size()
+        )
+        if not failed_by_office.empty:
+            top_office = str(failed_by_office.idxmax())
+
+    if failed_count > 0:
+        return MDMBanner(
+            severity="critical",
+            title=f"{failed_count} equipos con parches fallidos",
+            description=f"Concentrado en {top_office}" if top_office else "Revisar equipos fallidos",
+            failed_count=failed_count,
+            missing_count=missing_count,
+            top_office=top_office,
+        )
+    if total and missing_count / total > 0.10:
+        return MDMBanner(
+            severity="warning",
+            title=f"{round(missing_count / total * 100)}% del parque sin parchear",
+            description=f"{missing_count} equipos con parches pendientes",
+            failed_count=0,
+            missing_count=missing_count,
+            top_office=None,
+        )
+    return MDMBanner(
+        severity="ok",
+        title="Todo el parque al día",
+        description="No hay parches críticos pendientes",
+        failed_count=0,
+        missing_count=missing_count,
+        top_office=None,
+    )
