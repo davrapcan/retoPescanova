@@ -11,7 +11,7 @@ export function OutliersList({ data }: OutliersListProps) {
   return (
     <div className="flex flex-col gap-2 w-full">
       <p style={{ fontSize: '10px', color: 'var(--text-tertiary)', lineHeight: 1.4 }}>
-        Usuarios con tiempo &gt; p90 y score &lt; 30% — mayor esfuerzo, menor resultado.
+        Personas que dedicaron mucho tiempo y obtuvieron mala nota — necesitan atención adicional.
       </p>
       <div className="flex flex-col gap-1.5">
         {data.map((user) => {

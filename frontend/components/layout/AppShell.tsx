@@ -15,7 +15,7 @@ function ShellInner({ children }: { children: React.ReactNode }) {
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   return (
-    <Suspense fallback={<main className="px-4 pb-4 pt-2">{children}</main>}>
+    <Suspense fallback={<main className="px-4 pb-4 pt-2" />}>
       <ShellInner>{children}</ShellInner>
     </Suspense>
   )

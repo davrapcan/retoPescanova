@@ -103,7 +103,7 @@ export function CountryDoubleBar({ data, onSelect, activeCountry }: CountryDoubl
             >
               <span style={{ color: compColor, fontWeight: 600 }}>{Math.round(compPct)}%</span>
               <span style={{ color: 'var(--text-tertiary)' }}> · </span>
-              <span style={{ color: 'var(--brand-blue)' }}>{Math.round(scorePct)}pts</span>
+              <span style={{ color: 'var(--brand-blue)' }}>{Math.round(scorePct)}%</span>
             </div>
           </div>
         )
@@ -121,7 +121,7 @@ export function CountryDoubleBar({ data, onSelect, activeCountry }: CountryDoubl
         </div>
         <div className="flex items-center gap-1">
           <div style={{ width: '12px', height: '3px', background: 'var(--brand-blue)', borderRadius: '1px', opacity: 0.7 }} />
-          <span>Score</span>
+          <span>Nota media</span>
         </div>
         <div className="flex items-center gap-1">
           <span style={{ color: 'var(--warning)' }}>⚠</span>

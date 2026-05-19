@@ -56,7 +56,7 @@ export function ScoreHistogram({ data }: ScoreHistogramProps) {
       textStyle: { fontSize: 11, color: '#0F172A' },
       formatter: (params: { name: string; value: number }[]) => {
         const p = params[0]
-        return `<b>${p.name}</b><br/>Usuarios: <b>${p.value}</b>`
+        return `<b>Nota: ${p.name}</b><br/>Personas: <b>${p.value}</b>`
       },
     },
     series: [
@@ -85,7 +85,7 @@ export function ScoreHistogram({ data }: ScoreHistogramProps) {
         className="mt-1 shrink-0"
         style={{ fontSize: '11px', color: 'var(--critical)', fontWeight: 500 }}
       >
-        {criticalCount.toLocaleString('es-ES')} usuarios en zona crítica (score &lt;20%)
+        {criticalCount.toLocaleString('es-ES')} personas con nota inferior al 20%
       </p>
     </div>
   )

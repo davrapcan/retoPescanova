@@ -35,7 +35,7 @@ export function KPICard({
     >
       <span
         className="text-xs font-medium uppercase tracking-wide"
-        style={{ color: 'var(--text-secondary)', letterSpacing: '0.5px', fontSize: '10px' }}
+        style={{ color: 'var(--text-secondary)', letterSpacing: '0.5px', fontSize: '12px' }}
       >
         {label}
       </span>
