@@ -1,31 +1,46 @@
 from contextlib import asynccontextmanager
 from pathlib import Path
 
+import pandas as pd
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.config import DATA_DIR
-from app.routers import mdm, training, ingest
+from app.config import DATA_API_URL, DATA_DIR
+from app.routers import ingest, mdm, training
+from app.services.data_fetcher import load_from_api
 from app.storage.memory import store
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # On startup: try to reload parquet files persisted from previous uploads
+    mdm_ok = training_ok = False
+
+    # 1. Intentar cargar desde data API si está configurada
+    if DATA_API_URL:
+        try:
+            mdm_ok, training_ok = await load_from_api()
+        except Exception as exc:
+            print(f"[startup] Data API no disponible: {exc}")
+
+    # 2. Fallback: parquets del disco
     data_path = Path(DATA_DIR)
     try:
-        import pandas as pd
-        needed_mdm = ["mdm_events", "mdm_devices", "mdm_patches"]
-        needed_training = ["training_events", "training_users"]
-        if all((data_path / f"{n}.parquet").exists() for n in needed_mdm):
-            store.mdm_events = pd.read_parquet(data_path / "mdm_events.parquet")
-            store.mdm_devices = pd.read_parquet(data_path / "mdm_devices.parquet")
-            store.mdm_patches = pd.read_parquet(data_path / "mdm_patches.parquet")
-        if all((data_path / f"{n}.parquet").exists() for n in needed_training):
-            store.training_events = pd.read_parquet(data_path / "training_events.parquet")
-            store.training_users = pd.read_parquet(data_path / "training_users.parquet")
+        if not mdm_ok:
+            needed = ["mdm_events", "mdm_devices", "mdm_patches"]
+            if all((data_path / f"{n}.parquet").exists() for n in needed):
+                store.mdm_events = pd.read_parquet(data_path / "mdm_events.parquet")
+                store.mdm_devices = pd.read_parquet(data_path / "mdm_devices.parquet")
+                store.mdm_patches = pd.read_parquet(data_path / "mdm_patches.parquet")
+                print("[startup] MDM cargado desde parquet")
+        if not training_ok:
+            needed = ["training_events", "training_users"]
+            if all((data_path / f"{n}.parquet").exists() for n in needed):
+                store.training_events = pd.read_parquet(data_path / "training_events.parquet")
+                store.training_users = pd.read_parquet(data_path / "training_users.parquet")
+                print("[startup] Training cargado desde parquet")
     except Exception as exc:
-        print(f"[startup] Could not reload parquet: {exc}")
+        print(f"[startup] Error cargando parquet: {exc}")
+
     yield
 
 

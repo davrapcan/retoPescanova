@@ -4,7 +4,7 @@ from pathlib import Path
 import pandas as pd
 from fastapi import APIRouter, HTTPException, UploadFile, File
 
-from app.config import DATA_DIR
+from app.config import DATA_API_URL, DATA_DIR
 from app.models.responses import ApiResponse
 from app.storage.memory import store
 from app.transforms.loaders import load_mdm_xlsx, load_training_xlsx
@@ -61,6 +61,19 @@ async def ingest_training(file: UploadFile = File(...)):
         "events": len(events),
         "users": len(users),
     }}
+
+
+@router.post("/reload", response_model=ApiResponse[dict])
+async def reload_from_api():
+    """Recarga MDM y Training desde DATA_API_URL sin necesidad de subir ficheros."""
+    if not DATA_API_URL:
+        raise HTTPException(status_code=503, detail="DATA_API_URL no configurada.")
+    from app.services.data_fetcher import load_from_api
+    try:
+        mdm_ok, training_ok = await load_from_api()
+    except Exception as exc:
+        raise HTTPException(status_code=502, detail=f"Error al contactar con la data API: {exc}")
+    return {"data": {"mdm_reloaded": mdm_ok, "training_reloaded": training_ok}}
 
 
 @router.get("/status", response_model=ApiResponse[dict])
