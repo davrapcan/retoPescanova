@@ -153,27 +153,16 @@ export default function TrainingPage() {
       </div>
 
       {/* ── Row 3: Heatmap protagonista — fixed height ── */}
-      <div className="shrink-0" style={{ height: '205px' }}>
-        <div
-          className="h-full rounded-lg bg-white"
-          style={{ border: '0.5px solid var(--border)', padding: '10px 12px 6px' }}
-        >
-          <p
-            className="uppercase font-medium mb-2 shrink-0"
-            style={{ fontSize: '11px', color: 'var(--text-secondary)', letterSpacing: '0.5px' }}
-          >
-            ¿Qué módulos generan más fricción por país?
-          </p>
-          <div style={{ height: 'calc(100% - 28px)' }}>
-            {friction.loading ? (
-              <Skeleton full />
-            ) : friction.data ? (
-              <FrictionHeatmap data={friction.data} />
-            ) : (
-              <EmptyState description="Sin datos de fricción. Sube el XLSX de formación." />
-            )}
-          </div>
-        </div>
+      <div className="shrink-0" style={{ height: '210px' }}>
+        <Card title="¿Qué módulos generan más fricción por país?" className="h-full">
+          {friction.loading ? (
+            <Skeleton full />
+          ) : friction.data ? (
+            <FrictionHeatmap data={friction.data} />
+          ) : (
+            <EmptyState description="Sin datos de fricción. Sube el XLSX de formación." />
+          )}
+        </Card>
       </div>
 
       {/* ── Detail Modals ── */}
@@ -189,31 +178,19 @@ export default function TrainingPage() {
 
       {/* ── Row 4: Histogram + Outliers — fills remaining space ── */}
       <div className="grid grid-cols-2 flex-1 min-h-0" style={{ gap: '6px' }}>
-        <div className="min-h-0 h-full">
-          <div
-            className="h-full rounded-lg bg-white flex flex-col"
-            style={{ border: '0.5px solid var(--border)', padding: '10px 12px 8px' }}
-          >
-            <p
-              className="uppercase font-medium mb-2 shrink-0"
-              style={{ fontSize: '11px', color: 'var(--text-secondary)', letterSpacing: '0.5px' }}
-            >
-              ¿Cómo se distribuye el score?
-            </p>
-            <div className="flex-1 min-h-0">
-              {distribution.loading ? (
-                <Skeleton full />
-              ) : distribution.data?.length ? (
-                <ScoreHistogram data={distribution.data} />
-              ) : (
-                <EmptyState />
-              )}
-            </div>
-          </div>
-        </div>
+        <Card title="¿Cómo se distribuye el score?" className="h-full">
+          {distribution.loading ? (
+            <Skeleton full />
+          ) : distribution.data?.length ? (
+            <ScoreHistogram data={distribution.data} />
+          ) : (
+            <EmptyState />
+          )}
+        </Card>
 
         <Card
           title="¿Quién invierte más tiempo con peor resultado?"
+          className="h-full"
           onClick={outliers.data?.length ? () => setUsersModalOpen(true) : undefined}
         >
           <div className="h-full overflow-y-auto">
